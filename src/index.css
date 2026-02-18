@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── DESIGN TOKENS ─────────────────────── */
+:root {
+  --bg-dark:      #080D08;
+  --bg-mid:       #0C150C;
+  --bg-card:      #101A10;
+  --bg-lift:      #152015;
+  --accent-gold:  #C8A96E;
+  --accent-gold2: #E8C98E;
+  --accent-green: #2D5A27;
+  --accent-lime:  #7AAF6A;
+  --text-primary: #F0EDE6;
+  --text-muted:   #7A7A6A;
+  --text-dim:     #4A4A3A;
+  --border-gold:  rgba(200,169,110,0.18);
+  --border-hover: rgba(200,169,110,0.55);
+  --glow-gold:    0 0 30px rgba(200,169,110,0.25);
+  --glow-green:   0 0 40px rgba(45,90,39,0.4);
+}
+
+/* ── GLOBALS ───────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── TEXT SELECTION ────────────────────── */
+::selection {
+  background: var(--accent-gold);
+  color: var(--bg-dark);
+}
+
+/* ── CUSTOM SCROLLBAR ──────────────────── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--accent-gold);
+  border-radius: 999px;
+}
+
+/* ── NOISE TEXTURE OVERLAY ─────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ── SECTION SPACING ───────────────────── */
+section { padding: 120px 0; position: relative; }
+@media (max-width: 768px) { section { padding: 70px 0; } }
+
+/* ── MARQUEE ───────────────────────────── */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── SHIMMER BUTTON ────────────────────── */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg,
+    transparent, rgba(255,255,255,0.15), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.5s ease;
+}
+.shimmer:hover::after { left: 150%; }
+
+/* ── GOLD UNDERLINE LINK ───────────────── */
+.gold-link {
+  position: relative;
+  color: var(--accent-gold);
+  text-decoration: none;
+}
+.gold-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0;
+  width: 0; height: 1px;
+  background: var(--accent-gold);
+  transition: width 0.3s ease;
+}
+.gold-link:hover::after { width: 100%; }
+
+/* ── INPUT RESET ───────────────────────── */
+input, textarea, select {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  width: 100%;
+}
+input::placeholder,
+textarea::placeholder { color: var(--text-dim); }
+
+/* ── SKIP TO CONTENT ────────────────────── */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  background: var(--accent-gold);
+  color: var(--bg-dark);
+  padding: 8px 16px;
+  z-index: 10000;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* ── FOCUS VISIBLE ──────────────────────── */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
