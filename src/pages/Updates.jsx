@@ -1,580 +1,453 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
+import { useInView } from 'react-intersection-observer';
+import { 
+  ArrowRight, 
+  Calendar, 
+  Send, 
+  CheckCircle2, 
+  Sparkles, 
   Newspaper,
-  Pin,
-  ArrowRight,
-  Calendar,
-  Send,
-  CheckCircle,
-  Filter,
+  Terminal,
+  Anchor,
+  TrendingUp,
   Globe,
-  Award,
-  Handshake,
-  Megaphone,
+  Hourglass
 } from 'lucide-react';
 
-/* ─── Data ──────────────────────────────────────── */
-
-const CATEGORIES = ['All', 'Trade Shows', 'Press', 'Certifications', 'Partnerships'];
-
-const CATEGORY_ICONS = {
-  'Trade Shows': Globe,
-  Press: Megaphone,
-  Certifications: Award,
-  Partnerships: Handshake,
-};
-
-const CATEGORY_COLORS = {
-  'Trade Shows': { bg: 'rgba(200,80,26,.12)', text: 'var(--saffron)' },
-  Press: { bg: 'rgba(212,168,83,.12)', text: 'var(--gold)' },
-  Certifications: { bg: 'rgba(27,94,58,.15)', text: 'var(--cardamom)' },
-  Partnerships: { bg: 'rgba(139,26,26,.12)', text: 'var(--cinnamon)' },
-};
-
-const FEATURED = {
-  category: 'Partnerships',
-  date: 'May 2026',
-  title: 'Richy Exports Expands to 5 New Markets in Africa',
-  excerpt:
-    'In a landmark move, Richy Exports has established direct trading partnerships in Nigeria, Kenya, Ghana, Tanzania, and Ethiopia — bringing India\'s finest whole and ground spices to rapidly growing African markets. This expansion increases our global presence to 50+ countries and reinforces our commitment to becoming the world\'s most trusted spice trading house.',
-  isPinned: true,
-};
+/* ═══════════════════════════════════════════════
+   UPDATES & INTELLIGENCE DATA
+   ═══════════════════════════════════════════════ */
 
 const NEWS_ITEMS = [
   {
     id: 'news-1',
-    category: 'Trade Shows',
-    date: 'Mar 2026',
-    title: 'Participation in Gulfood 2026, Dubai',
-    excerpt:
-      'Richy Exports showcased its premium spice portfolio at Gulfood 2026, the world\'s largest food trade show in Dubai. Our booth featured live spice blending demonstrations and attracted over 200 qualified B2B leads from across the GCC region.',
+    category: 'Market Insights',
+    date: 'OCT 14, 2026',
+    title: "Vanilla Supply Resilience: Evaluating Madagascar's 2026 Harvest.",
+    excerpt: "Current yield reports indicate a 12% increase in A-grade organic vanilla bean production, stabilizing global luxury confectionery chains and pricing volatility.",
+    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAczXK5RNkk8tZMa1UAgQnvbSt2wp3nDDX_D6CIu1ZV81aYt7rs2tQ7_i7FrrUogy6BFLoheH6w1texzHA9UL7_dWa1bts9of3IRRM_D2I9RMO9oQ1NEIIflj4n4am0fOutrntbp0U0eBjNRd-OeSb0sWc6oB6FQbsnzcgAYYq0k0WF3lE_ijvuQpkpl30npHHZkyYP7HPfaCm3csliRM3-IAB5w0gW4w_kjEG9SMTkZy_3hG7MLU-IsQNQlwgLUg8Q1q_pqnnBVWI",
+    btnLabel: "Read Analysis"
   },
   {
     id: 'news-2',
-    category: 'Certifications',
-    date: 'Feb 2026',
-    title: 'New FSSAI Compliance Standards Achieved',
-    excerpt:
-      'Our processing facility in Chennai has achieved full compliance with the latest FSSAI 2026 standards, including enhanced traceability requirements and updated heavy-metal testing protocols for all export-grade products.',
+    category: 'Sustainability Milestones',
+    date: 'OCT 11, 2026',
+    title: "SpiceRoute Zero: Achieving 100% Carbon Neutrality in Sea Freight.",
+    excerpt: "Our primary spice routes between Cochin and Hamburg are now fully offset through our proprietary mangrove reforestation and restoration project in Kerala coastal zones.",
+    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAfyMo4CgJAOOtjMLX24QriULgAMlIkSuEUQ2thnGiP1JT18gXXQzC173vwzubqOAa2TTgcFEuSzezN0_10tj1lA4jY_u5S1tXKFetXIz2UYu4Sdlu-4t-EQMUlhfdaGEGf67d69tc_qjDifvTJE2T4apVmaQcjKndkaX8NZC7DtFw6m-bJZ-eI22J1T_2PzfDW6s4k5Zyq1rzy9GtnDy7X5OtmYguHTBZk1X8pO3Dg_s7A53dlOs_UwmWkrqocMUCAR3mJPZilRfw",
+    btnLabel: "View Roadmap"
   },
   {
     id: 'news-3',
-    category: 'Partnerships',
-    date: 'Jan 2026',
-    title: 'Partnership with European Spice Distributors Network',
-    excerpt:
-      'Richy Exports has joined the European Spice Distributors Network (ESDN), gaining preferred supplier status across 12 EU member nations. This partnership streamlines customs, reduces transit times, and unlocks exclusive retail opportunities.',
+    category: 'Company Announcements',
+    date: 'OCT 08, 2026',
+    title: "Expansion: New Regional Logistics Hub in Singapore Now Operational.",
+    excerpt: "The 50,000 sq. ft. high-precision temperature-controlled facility will halve lead times and guarantee volatile oil preservation for Asia-Pacific institutional partners.",
+    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBBjA3T8i5n8ZG364PUsO4bgpz1sSarPZufKssbRXP_MSR4Mj49XaFafasov4VPkdZjI3Ks0vUbCEN5tlsA1-pnzJO1URi30DnMPmPrLCqOABnsvThlf3rkChtOnos_u9vSAOTPDVI28eGw10QarqWLRemEM8OJOazD-xctHLGl9pAdxpvTFMqwHeSfvhp2Dkf_uzxIdKoiZGD0JsHubF83K-Wv75_-Do73US0wbOUWgCjHURywW370yRCQFGoX4XDNLS-RrrsWBYM",
+    btnLabel: "Explore Hub"
   },
   {
     id: 'news-4',
-    category: 'Press',
-    date: 'Dec 2025',
-    title: 'Richy Exports Featured in Business Today',
-    excerpt:
-      'Business Today profiled Richy Exports in their "Champions of Indian Commerce" series, highlighting our 20-year journey from a Chennai-based trader to a globally recognized spice export powerhouse shipping 5,000+ tonnes annually.',
+    category: 'Market Insights',
+    date: 'SEP 30, 2026',
+    title: "Cassia vs. Ceylon: Predictive Demand Shifts in the North American Market.",
+    excerpt: "A technical deep dive into the regulatory changes and organic consumer health trends driving a 20% shift toward premium Ceylon cinnamon varieties across retail networks.",
+    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBSKYsOLBwQrVBwXAr3O-XJ05lY9ZoW9bxy8E9ShmhOA6mgteWDNabEx8_CidJhS4xDC-wr-7XDT1ICpMOvgHlZrjfxYHbCuaZ4vuYiIKatabmmM2lPiov68UDDqd8LNBWg3KCPxL5uWDWmrjUQ63zBwQAGrB97g_t2G69OAlq9aSwXqTK_FAohG9hYhQpPGN5378dJwJKujxhXVMaqeCYqHw26bC70rQDxqKhMWpFH-_dYkBr2w2SYHMIST0lFkWUCyyIw-hloJY8",
+    btnLabel: "Full Analysis",
+    span: "md:col-span-2 flex flex-col md:flex-row gap-8 pb-10"
   },
   {
     id: 'news-5',
-    category: 'Certifications',
-    date: 'Nov 2025',
-    title: 'ISO 22000 Food Safety Certification',
-    excerpt:
-      'Our facility has been awarded the prestigious ISO 22000:2018 certification for Food Safety Management Systems, joining an elite group of Indian spice exporters who meet the most stringent international food safety benchmarks.',
-  },
-  {
-    id: 'news-6',
-    category: 'Trade Shows',
-    date: 'Oct 2025',
-    title: 'India International Trade Fair 2025 Showcase',
-    excerpt:
-      'At IITF 2025, Richy Exports presented our sustainability initiatives including solar-powered processing and biodegradable packaging. The showcase earned the "Best Export Display" award from the India Trade Promotion Organisation.',
-  },
-  {
-    id: 'news-7',
-    category: 'Partnerships',
-    date: 'Sep 2025',
-    title: 'Strategic Alliance with South American Importers',
-    excerpt:
-      'We\'ve established strategic alliances with three leading spice importers in Brazil, Argentina, and Colombia. This partnership enables direct container shipments via dedicated sea routes, reducing delivery times by 40%.',
-  },
-  {
-    id: 'news-8',
-    category: 'Press',
-    date: 'Aug 2025',
-    title: 'Annual Export Volume Crosses 5000 Tonnes',
-    excerpt:
-      'Richy Exports has crossed a historic milestone — 5,000 tonnes of spices exported in a single fiscal year. This achievement reflects growing global demand for premium Indian spices and our capacity to scale without compromising quality.',
-  },
+    category: 'Logistics Reports',
+    date: 'SEP 24, 2026',
+    title: '"Efficiency is the silent ingredient in every spice we deliver."',
+    excerpt: "Streamlined customs clearance procedures implemented at Port of Rotterdam. Digital dockets are now pre-processed during high-sea transit.",
+    isQuote: true,
+    author: "Logistics Desk",
+    btnLabel: "Port Stats"
+  }
 ];
 
-/* ─── Animation Variants ────────────────────────── */
+const FILTERS = [
+  'All Intelligence',
+  'Market Insights',
+  'Sustainability Milestones',
+  'Company Announcements',
+  'Logistics Reports'
+];
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.15 },
-  },
-};
+/* ═══════════════════════════════════════════════
+   ANIMATION CONFIGS
+   ═══════════════════════════════════════════════ */
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.97 },
-  visible: {
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i = 0) => ({
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
-  },
-  exit: {
-    opacity: 0,
-    y: -20,
-    scale: 0.95,
-    transition: { duration: 0.3 },
-  },
+    transition: { duration: 0.7, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }
+  })
 };
 
-/* ─── News Card Component ───────────────────────── */
-
-function NewsCard({ item }) {
-  const colors = CATEGORY_COLORS[item.category] || { bg: 'rgba(212,168,83,.12)', text: 'var(--gold)' };
-  const CategoryIcon = CATEGORY_ICONS[item.category] || Newspaper;
-
-  return (
-    <motion.article
-      className="group glass-card flex flex-col h-full overflow-hidden"
-      variants={cardVariants}
-      layout
-      whileHover={{ y: -6, boxShadow: 'var(--shadow-lg)' }}
-    >
-      {/* Top accent line */}
-      <div
-        className="h-1 w-full"
-        style={{
-          background: `linear-gradient(90deg, ${colors.text}, transparent)`,
-          opacity: 0.5,
-        }}
-      />
-
-      <div className="flex flex-col flex-1 p-6 md:p-7">
-        {/* Meta row */}
-        <div className="flex items-center justify-between mb-4">
-          <span
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[11px] tracking-[.12em] uppercase"
-            style={{ background: colors.bg, color: colors.text }}
-          >
-            <CategoryIcon size={12} />
-            {item.category}
-          </span>
-          <span
-            className="flex items-center gap-1.5 text-xs"
-            style={{ color: 'var(--text-muted)', fontFamily: "'DM Mono', monospace" }}
-          >
-            <Calendar size={12} />
-            {item.date}
-          </span>
-        </div>
-
-        {/* Title */}
-        <h3
-          className="font-display text-lg md:text-xl font-bold leading-snug mb-3 transition-colors duration-300 group-hover:text-[var(--saffron)]"
-          style={{ color: 'var(--text-dark)' }}
-        >
-          {item.title}
-        </h3>
-
-        {/* Excerpt */}
-        <p
-          className="text-sm leading-relaxed flex-1 mb-5"
-          style={{ color: 'var(--text-mid)', fontFamily: "'Inter', sans-serif" }}
-        >
-          {item.excerpt}
-        </p>
-
-        {/* Read More */}
-        <div className="mt-auto">
-          <span
-            className="inline-flex items-center gap-2 text-sm font-semibold cursor-pointer transition-all duration-300 group-hover:gap-3"
-            style={{ color: 'var(--saffron)', fontFamily: "'Inter', sans-serif" }}
-          >
-            Read More
-            <ArrowRight
-              size={14}
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            />
-          </span>
-        </div>
-      </div>
-    </motion.article>
-  );
-}
-
-/* ─── Main Updates Component ────────────────────── */
+/* ═══════════════════════════════════════════════
+   UPDATES PAGE
+   ═══════════════════════════════════════════════ */
 
 export default function Updates() {
-  const [activeFilter, setActiveFilter] = useState('All');
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState('All Intelligence');
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
 
+  const [headerRef, headerInView] = useInView({ triggerOnce: true, threshold: 0.3 });
+  const [reportRef, reportInView] = useInView({ triggerOnce: true, threshold: 0.2 });
+  const [gridRef, gridInView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.3 });
+
+  // Filtering news
   const filteredNews = useMemo(() => {
-    if (activeFilter === 'All') return NEWS_ITEMS;
-    return NEWS_ITEMS.filter((item) => item.category === activeFilter);
-  }, [activeFilter]);
+    if (selectedFilter === 'All Intelligence') return NEWS_ITEMS;
+    return NEWS_ITEMS.filter(item => item.category.toLowerCase() === selectedFilter.toLowerCase());
+  }, [selectedFilter]);
 
-  const handleSubscribe = (e) => {
+  const handleSubscribeSubmit = (e) => {
     e.preventDefault();
-    if (email.trim()) {
-      setSubscribed(true);
-      setEmail('');
-    }
+    setNewsletterSubmitted(true);
+    setTimeout(() => {
+      setNewsletterSubmitted(false);
+      setNewsletterEmail('');
+    }, 3500);
   };
 
-  const featuredColors = CATEGORY_COLORS[FEATURED.category];
-  const FeaturedIcon = CATEGORY_ICONS[FEATURED.category] || Newspaper;
-
   return (
-    <main className="overflow-x-hidden" style={{ background: 'var(--cream)' }}>
-      {/* ── Hero ──────────────────────────────────── */}
-      <section
-        className="relative min-h-[55vh] flex items-center justify-center overflow-hidden grain-overlay"
-        style={{
-          background: 'linear-gradient(160deg, var(--midnight) 0%, var(--charcoal) 55%, var(--ash) 100%)',
-        }}
+    <div className="relative min-h-screen bg-[#fbf9f4] overflow-hidden pt-[140px]">
+      <div className="absolute inset-0 grain-overlay pointer-events-none z-0" />
+
+      {/* 1. HERO TITLE SECTION */}
+      <section 
+        ref={headerRef}
+        className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-16 md:mb-20 relative z-10"
       >
-        {/* Decorative grid dots */}
-        <div
-          className="absolute inset-0 opacity-[.03]"
-          style={{
-            backgroundImage: 'radial-gradient(var(--gold) 1px, transparent 1px)',
-            backgroundSize: '32px 32px',
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="absolute top-0 right-0 w-[600px] h-[600px] opacity-[.06]"
-          style={{ background: 'radial-gradient(circle at top right, var(--gold), transparent 60%)' }}
-          aria-hidden="true"
-        />
-
-        <div className="relative z-10 max-w-4xl mx-auto px-5 text-center">
-          <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8"
-            style={{
-              background: 'rgba(212,168,83,.1)',
-              border: '1px solid rgba(212,168,83,.18)',
-            }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            <Newspaper size={14} style={{ color: 'var(--gold)' }} />
-            <span className="font-mono text-[11px] tracking-[.2em] uppercase" style={{ color: 'var(--gold)' }}>
-              Latest Updates
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="max-w-3xl space-y-4">
+            <span className="font-mono text-xs tracking-[0.3em] text-[var(--gold)] font-bold block uppercase">
+              INTELLIGENCE & LOG
             </span>
-          </motion.div>
-
-          <motion.h1
-            className="font-display text-5xl md:text-7xl xl:text-[88px] font-bold leading-[1.05] mb-6"
-            style={{ color: 'var(--cream)' }}
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            News &{' '}
-            <span className="gold-shimmer">Updates</span>
-          </motion.h1>
-
-          <motion.p
-            className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
-            style={{ color: 'rgba(255,255,255,.6)', fontFamily: "'Inter', sans-serif" }}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.65, duration: 0.6 }}
-          >
-            Stay updated with the latest from Richy Exports — trade shows,
-            certifications, partnerships, and milestones.
-          </motion.p>
+            <h1 className="font-display font-semibold text-[var(--text-dark)] leading-tight text-4xl md:text-6xl tracking-tight">
+              Global Updates & Announcements
+            </h1>
+          </div>
+          <div className="max-w-md pb-1">
+            <p className="font-body text-sm md:text-base text-[var(--text-muted)] leading-relaxed font-light">
+              Real-time market volatility analysis, milestone achievements, and the evolution of the modern spice route.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* ── Featured Banner ──────────────────────── */}
-      <section className="section-padding" style={{ background: 'var(--cream)', paddingBottom: '60px' }}>
-        <div className="container-custom">
-          <motion.article
-            className="relative rounded-2xl overflow-hidden"
-            style={{
-              background: 'linear-gradient(135deg, var(--midnight) 0%, var(--charcoal) 70%, rgba(200,80,26,.2) 100%)',
-              border: '1px solid rgba(212,168,83,.2)',
-            }}
-            initial={{ opacity: 0, y: 40, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.7 }}
-          >
-            {/* Glow effect */}
-            <div
-              className="absolute -top-20 -right-20 w-[400px] h-[400px] rounded-full opacity-[.08]"
-              style={{ background: 'radial-gradient(circle, var(--gold), transparent 70%)' }}
-              aria-hidden="true"
+      {/* 2. FEATURED EDITORIAL CARD */}
+      <section 
+        ref={reportRef}
+        className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-24 relative z-10"
+      >
+        <motion.div 
+          className="relative group overflow-hidden bg-[var(--midnight)] text-white flex flex-col md:flex-row h-auto md:h-[550px] border border-neutral-800"
+          initial={{ opacity: 0, y: 30 }}
+          animate={reportInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+        >
+          {/* Inner content */}
+          <div className="flex-1 p-10 md:p-14 flex flex-col justify-between z-10 relative">
+            <div className="space-y-6">
+              <span className="font-mono text-[9px] tracking-[0.25em] text-[var(--gold-light)] border border-[var(--gold-light)]/30 px-3.5 py-1.5 inline-block uppercase font-bold">
+                Quarterly Highlight
+              </span>
+              <h2 className="font-display text-2xl md:text-3xl font-medium text-cream leading-tight max-w-lg">
+                2026 Global Trade Report: Navigating the New Corridors of the Indo-Pacific.
+              </h2>
+              <p className="font-body text-xs md:text-sm text-neutral-400 leading-relaxed max-w-md font-light">
+                An in-depth analysis of maritime logistics shifts and the rising demand for high-grade organic cardamom and turmeric in European markets.
+              </p>
+            </div>
+            
+            <div className="pt-8">
+              <a 
+                href="/products" 
+                className="inline-flex items-center gap-3 group/btn font-mono text-[10px] tracking-wider uppercase text-[var(--gold-light)] hover:text-white transition-colors border-b border-[var(--gold-light)] pb-1 w-fit"
+              >
+                <span>Download Full Report</span>
+                <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
+              </a>
+            </div>
+          </div>
+
+          {/* Right Image */}
+          <div className="flex-1 relative overflow-hidden h-[300px] md:h-auto border-t md:border-t-0 md:border-l border-neutral-800">
+            <img 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuB76r3w6jP3xt2HqT-dRDUYkCF2i3RpT-5C9vKtD29qWwDFJxO6t-4TsjlTVHNSvd4n025Ct6annY2Wj0nksKdFSuoSFOY4vTqm84OAo0DiqbtLnxPqzuYR4Cw7RVhbBJB9sZa-urPGKpucKSWYu0Fr5A6WOVLQVpYEQC0qMyPJpe3u2SGGAcVBx-zqFpf5lep7PHPzeC2IrTh-iMhvNUm-HqaAfWvtI-npAPv-pNHueQaOBymAfwSN9L9F9PbB_RCYt20iTv8BpIE" 
+              alt="Saffron and peppercorns on bone-white stone surface" 
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
             />
+            <div className="absolute inset-0 bg-black/10" />
+          </div>
+        </motion.div>
+      </section>
 
-            <div className="relative z-10 p-8 md:p-12 lg:p-16">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-                <div className="flex-1">
-                  {/* Pinned badge */}
-                  <div className="flex items-center gap-3 mb-5">
-                    <span
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-mono text-[11px] tracking-[.15em] uppercase"
-                      style={{
-                        background: 'rgba(212,168,83,.15)',
-                        color: 'var(--gold)',
-                        border: '1px solid rgba(212,168,83,.25)',
-                      }}
-                    >
-                      <Pin size={12} />
-                      Pinned
-                    </span>
-                    <span
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[11px] tracking-[.12em] uppercase"
-                      style={{ background: featuredColors.bg, color: featuredColors.text }}
-                    >
-                      <FeaturedIcon size={12} />
-                      {FEATURED.category}
-                    </span>
+      {/* 3. CATEGORY FILTERS */}
+      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-10 relative z-10">
+        <div className="flex flex-wrap gap-x-10 gap-y-4 border-b border-neutral-200 pb-5 overflow-x-auto scrollbar-none">
+          {FILTERS.map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setSelectedFilter(filter)}
+              className={`font-mono text-[10px] font-bold tracking-wider uppercase whitespace-nowrap transition-all duration-200 pb-1.5 focus:outline-none ${
+                selectedFilter === filter
+                  ? 'text-[var(--gold)] border-b-2 border-[var(--gold)]'
+                  : 'text-neutral-500 hover:text-[var(--text-dark)] border-b-2 border-transparent'
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* 4. NEWS ARTICLES GRID */}
+      <section 
+        ref={gridRef}
+        className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-24 relative z-10"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-16 gap-x-8" id="news-grid">
+          <AnimatePresence mode="popLayout">
+            {filteredNews.map((item, i) => {
+              if (item.span) {
+                return (
+                  <motion.article 
+                    layout
+                    key={item.id}
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate={gridInView ? 'visible' : 'hidden'}
+                    custom={i}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className={`${item.span} border-b border-neutral-200 pb-8 group`}
+                  >
+                    {/* Left image of bento */}
+                    <div className="flex-1 overflow-hidden aspect-video bg-[var(--cream-dark)] border border-neutral-300">
+                      <img 
+                        src={item.image} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
+                    {/* Right text of bento */}
+                    <div className="flex-1 flex flex-col justify-center space-y-4 mt-6 md:mt-0">
+                      <div className="flex justify-between items-center text-[10px] font-mono font-bold tracking-wider text-[var(--gold)]">
+                        <span>TECHNICAL ANALYSIS</span>
+                        <span className="text-neutral-400 font-normal">{item.date}</span>
+                      </div>
+                      <h3 className="font-display text-2xl font-semibold leading-tight text-[var(--text-dark)] group-hover:text-[var(--gold)] transition-colors duration-300">
+                        {item.title}
+                      </h3>
+                      <p className="font-body text-xs text-[var(--text-muted)] leading-relaxed">
+                        {item.excerpt}
+                      </p>
+                      <div className="pt-2">
+                        <a 
+                          href="/products" 
+                          className="font-mono text-[10px] tracking-wider uppercase text-[var(--gold)] hover:text-[var(--text-dark)] transition-colors border-b border-[var(--gold)] pb-0.5 inline-flex items-center gap-1.5 group/link"
+                        >
+                          <span>{item.btnLabel}</span>
+                          <ArrowRight size={12} className="group-hover/link:translate-x-1 transition-transform" />
+                        </a>
+                      </div>
+                    </div>
+                  </motion.article>
+                );
+              }
+
+              if (item.isQuote) {
+                return (
+                  <motion.article 
+                    layout
+                    key={item.id}
+                    variants={fadeUp}
+                    initial="hidden"
+                    animate={gridInView ? 'visible' : 'hidden'}
+                    custom={i}
+                    exit={{ opacity: 0 }}
+                    className="group flex flex-col h-full border-b border-neutral-200 pb-8"
+                  >
+                    <div className="flex-grow flex flex-col justify-center bg-[var(--cream-dark)] p-8 border border-neutral-300/50">
+                      <span className="font-mono text-[8px] font-bold tracking-widest text-[var(--gold)] uppercase block mb-4">LOGISTICS DIVISION</span>
+                      <h3 className="font-display text-lg italic text-[var(--text-dark)] leading-relaxed mb-4 group-hover:text-[var(--gold)] transition-colors duration-300">
+                        {item.title}
+                      </h3>
+                      <p className="font-body text-xs text-[var(--text-muted)] leading-relaxed mb-3">
+                        {item.excerpt}
+                      </p>
+                      <span className="font-mono text-[9px] text-neutral-400 block">— {item.author}</span>
+                    </div>
+                    <div className="mt-6">
+                      <a 
+                        href="/contact" 
+                        className="font-mono text-[10px] tracking-wider uppercase text-[var(--text-dark)] hover:text-[var(--gold)] transition-colors inline-flex items-center gap-1.5 group/link"
+                      >
+                        <span>{item.btnLabel}</span>
+                        <ArrowRight size={12} className="group-hover/link:translate-x-1 transition-transform" />
+                      </a>
+                    </div>
+                  </motion.article>
+                );
+              }
+
+              return (
+                <motion.article 
+                  layout
+                  key={item.id}
+                  variants={fadeUp}
+                  initial="hidden"
+                  animate={gridInView ? 'visible' : 'hidden'}
+                  custom={i}
+                  exit={{ opacity: 0 }}
+                  className="group flex flex-col h-full border-b border-neutral-200 pb-8"
+                >
+                  <div className="overflow-hidden aspect-[4/3] mb-6 bg-[var(--cream-dark)] border border-neutral-200">
+                    <img 
+                      src={item.image} 
+                      alt={item.title} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
                   </div>
+                  <div className="flex-grow space-y-3">
+                    <div className="flex justify-between items-center text-[9px] font-mono font-bold tracking-wider text-[var(--gold)]">
+                      <span>{item.category}</span>
+                      <span className="text-neutral-400 font-normal">{item.date}</span>
+                    </div>
+                    <h3 className="font-display text-xl font-semibold leading-snug text-[var(--text-dark)] group-hover:text-[var(--gold)] transition-colors duration-300">
+                      {item.title}
+                    </h3>
+                    <p className="font-body text-xs text-[var(--text-muted)] leading-relaxed line-clamp-3">
+                      {item.excerpt}
+                    </p>
+                  </div>
+                  <div className="mt-6">
+                    <a 
+                      href="/products" 
+                      className="font-mono text-[10px] tracking-wider uppercase text-[var(--text-dark)] hover:text-[var(--gold)] transition-colors inline-flex items-center gap-1.5 group/link"
+                    >
+                      <span>{item.btnLabel}</span>
+                      <ArrowRight size={12} className="group-hover/link:translate-x-1 transition-transform" />
+                    </a>
+                  </div>
+                </motion.article>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+      </section>
 
-                  <span
-                    className="flex items-center gap-1.5 text-sm mb-3"
-                    style={{ color: 'rgba(255,255,255,.45)', fontFamily: "'DM Mono', monospace" }}
-                  >
-                    <Calendar size={14} />
-                    {FEATURED.date}
-                  </span>
+      {/* 5. NEWSLETTER SUBSCRIPTION (The Trade Registry) */}
+      <section className="bg-[var(--midnight)] py-24 overflow-hidden relative z-10 border-t border-neutral-800">
+        <div className="absolute inset-0 grain-overlay opacity-30 pointer-events-none" />
+        
+        {/* Background text decoration */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none overflow-hidden flex items-end justify-center select-none z-0">
+          <div className="font-display font-semibold text-[18vw] text-white uppercase leading-none translate-y-12">SPICEROUTE</div>
+        </div>
 
-                  <h2
-                    className="font-display text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.1] mb-5"
-                    style={{ color: 'var(--cream)' }}
-                  >
-                    {FEATURED.title}
-                  </h2>
+        <div className="container-custom relative z-10 flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+          <div className="flex-1 space-y-6">
+            <span className="font-mono text-xs tracking-[0.3em] text-[var(--gold-light)] uppercase font-bold block">
+              THE TRADE REGISTRY
+            </span>
+            <h2 className="font-display text-3xl md:text-4xl font-medium text-cream leading-tight">
+              Weekly Market Intelligence. <br />Delivered to your terminal.
+            </h2>
+            <p className="font-body text-xs md:text-sm text-neutral-400 max-w-md leading-relaxed font-light">
+              Join 12,000+ B2B institutional spice buyers and supply chain executives receiving our proprietary market analysis and logistics intelligence.
+            </p>
+          </div>
 
-                  <p
-                    className="text-base leading-relaxed max-w-2xl"
-                    style={{ color: 'rgba(255,255,255,.6)', fontFamily: "'Inter', sans-serif" }}
-                  >
-                    {FEATURED.excerpt}
+          <div className="flex-1 w-full max-w-lg">
+            {newsletterSubmitted ? (
+              <motion.div 
+                className="p-6 bg-neutral-800 border border-[var(--gold-light)]/30 text-[var(--gold-light)] flex items-center gap-3"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
+                <CheckCircle2 className="w-8 h-8 flex-shrink-0 text-green-400 animate-pulse" />
+                <div>
+                  <h4 className="font-mono text-xs font-bold text-white uppercase">Subscription Registered</h4>
+                  <p className="text-[10px] text-neutral-400 mt-1">
+                    Terminal connected. Weekly market intelligence updates will deploy to your email folder.
                   </p>
                 </div>
-
-                <div className="flex-shrink-0">
-                  <motion.button
-                    className="btn-primary"
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    Read Full Story
-                    <ArrowRight size={16} />
-                  </motion.button>
-                </div>
-              </div>
-            </div>
-          </motion.article>
-        </div>
-      </section>
-
-      {/* ── Filter Tabs + News Grid ──────────────── */}
-      <section style={{ background: 'var(--cream-dark)', paddingTop: '80px', paddingBottom: '120px' }}>
-        <div className="container-custom">
-          {/* Filter Tabs */}
-          <motion.div
-            className="flex flex-wrap items-center justify-center gap-3 mb-14"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <span className="mr-2" style={{ color: 'var(--text-muted)' }}>
-              <Filter size={16} />
-            </span>
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveFilter(cat)}
-                className="relative px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300"
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  background:
-                    activeFilter === cat
-                      ? 'var(--gold)'
-                      : 'rgba(255,255,255,.7)',
-                  color:
-                    activeFilter === cat
-                      ? 'var(--midnight)'
-                      : 'var(--text-mid)',
-                  border:
-                    activeFilter === cat
-                      ? '1px solid var(--gold)'
-                      : '1px solid rgba(26,20,16,.09)',
-                  boxShadow:
-                    activeFilter === cat
-                      ? '0 4px 20px rgba(212,168,83,.25)'
-                      : 'none',
-                }}
-              >
-                {cat}
-              </button>
-            ))}
-          </motion.div>
-
-          {/* News Grid */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeFilter}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-            >
-              {filteredNews.map((item) => (
-                <NewsCard key={item.id} item={item} />
-              ))}
-            </motion.div>
-          </AnimatePresence>
-
-          {filteredNews.length === 0 && (
-            <motion.p
-              className="text-center py-16 text-lg"
-              style={{ color: 'var(--text-muted)', fontFamily: "'Inter', sans-serif" }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              No updates in this category yet. Check back soon.
-            </motion.p>
-          )}
-        </div>
-      </section>
-
-      {/* ── Newsletter Signup ────────────────────── */}
-      <section
-        className="section-padding relative overflow-hidden grain-overlay"
-        style={{
-          background: 'linear-gradient(160deg, var(--midnight) 0%, var(--charcoal) 60%, rgba(200,80,26,.15) 100%)',
-        }}
-      >
-        <div
-          className="absolute inset-0 opacity-[.03]"
-          style={{
-            backgroundImage: 'radial-gradient(var(--gold) 1px, transparent 1px)',
-            backgroundSize: '20px 20px',
-          }}
-          aria-hidden="true"
-        />
-
-        <div className="relative z-10 container-custom text-center">
-          <motion.div
-            className="max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6 }}
-          >
-            <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
-              style={{
-                background: 'rgba(212,168,83,.1)',
-                border: '1px solid rgba(212,168,83,.2)',
-              }}
-            >
-              <Send size={24} style={{ color: 'var(--gold)' }} />
-            </div>
-
-            <h2
-              className="font-display text-4xl md:text-5xl font-bold mb-4"
-              style={{ color: 'var(--cream)' }}
-            >
-              Subscribe to our{' '}
-              <span className="gold-shimmer">Updates</span>
-            </h2>
-
-            <p
-              className="text-base md:text-lg mb-10 leading-relaxed"
-              style={{ color: 'rgba(255,255,255,.55)', fontFamily: "'Inter', sans-serif" }}
-            >
-              Get the latest trade news, event invitations, and company
-              milestones delivered straight to your inbox. No spam — just
-              the updates that matter.
-            </p>
-
-            {subscribed ? (
-              <motion.div
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-xl"
-                style={{
-                  background: 'rgba(27,94,58,.15)',
-                  border: '1px solid rgba(27,94,58,.3)',
-                }}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4 }}
-              >
-                <CheckCircle size={22} style={{ color: 'var(--cardamom)' }} />
-                <span
-                  className="text-base font-medium"
-                  style={{ color: 'var(--cream)', fontFamily: "'Inter', sans-serif" }}
-                >
-                  You're subscribed! Watch your inbox for our next update.
-                </span>
               </motion.div>
             ) : (
-              <form
-                onSubmit={handleSubscribe}
-                className="flex flex-col sm:flex-row items-center gap-3 max-w-lg mx-auto"
-              >
-                <div className="relative flex-1 w-full">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
+              <form onSubmit={handleSubscribeSubmit} className="space-y-12">
+                <div className="relative">
+                  <label className="font-mono text-[9px] tracking-wider text-neutral-500 uppercase block mb-1 font-bold">Email Address</label>
+                  <input 
+                    type="email" 
                     required
-                    className="w-full px-5 py-4 rounded-lg text-sm transition-all duration-300"
-                    style={{
-                      background: 'rgba(255,255,255,.08)',
-                      border: '1px solid rgba(212,168,83,.2)',
-                      color: 'var(--cream)',
-                      fontFamily: "'Inter', sans-serif",
-                      outline: 'none',
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = 'var(--gold)';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(212,168,83,.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = 'rgba(212,168,83,.2)';
-                      e.target.style.boxShadow = 'none';
-                    }}
+                    placeholder="trade@organization.com"
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    className="w-full bg-transparent border-0 border-b border-neutral-700 text-white py-3.5 focus:border-[var(--gold-light)] focus:ring-0 placeholder:text-neutral-700 outline-none transition-colors text-xs"
                   />
                 </div>
-                <motion.button
-                  type="submit"
-                  className="btn-primary whitespace-nowrap w-full sm:w-auto"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  Subscribe
-                  <ArrowRight size={16} />
-                </motion.button>
+                <div className="flex flex-col gap-6">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input 
+                      type="checkbox" 
+                      required
+                      className="w-4 h-4 bg-transparent border-neutral-700 text-[var(--gold)] focus:ring-0 focus:ring-offset-0"
+                    />
+                    <span className="font-body text-xs text-neutral-400 group-hover:text-white transition-colors">
+                      I agree to receive weekly market volatility logs and maritime logistics reports.
+                    </span>
+                  </label>
+                  <button 
+                    type="submit"
+                    className="w-full py-4.5 bg-[var(--gold-light)] hover:bg-[var(--gold)] text-[var(--midnight)] font-mono text-[11px] font-bold tracking-wider uppercase transition-all duration-300"
+                  >
+                    SUBSCRIBE TO INTELLIGENCE
+                  </button>
+                </div>
               </form>
             )}
-
-            <p
-              className="mt-5 text-xs"
-              style={{ color: 'rgba(255,255,255,.3)', fontFamily: "'Inter', sans-serif" }}
-            >
-              We respect your privacy. Unsubscribe anytime.
-            </p>
-          </motion.div>
+          </div>
         </div>
       </section>
-    </main>
+
+      {/* 6. DATA STATS FOOTER ACCENT (Monospaced live statistics indicators) */}
+      <section 
+        ref={statsRef}
+        className="border-y border-neutral-200 py-10 bg-[#f5f3ee] relative z-10"
+      >
+        <div className="container-custom grid grid-cols-2 md:grid-cols-4 gap-8">
+          {[
+            { label: 'Live Shipments', value: '1,402' },
+            { label: 'Market Stability', value: '+2.4%' },
+            { label: 'Ports Operational', value: '48' },
+            { label: 'Active Trade Desk', value: '24/7' }
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              className="text-center md:text-left space-y-1"
+              initial="hidden"
+              animate={statsInView ? 'visible' : 'hidden'}
+              variants={fadeUp}
+              custom={i}
+            >
+              <span className="font-mono text-[9px] tracking-wider uppercase text-neutral-500 font-bold block">{stat.label}</span>
+              <span className="font-mono text-2xl md:text-3xl text-[var(--gold)] font-bold block">{stat.value}</span>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+    </div>
   );
 }
