@@ -3,451 +3,319 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { 
   ArrowRight, 
-  Calendar, 
-  Send, 
   CheckCircle2, 
-  Sparkles, 
-  Newspaper,
-  Terminal,
-  Anchor,
-  TrendingUp,
-  Globe,
-  Hourglass
+  Search, 
+  Calendar, 
+  Download, 
+  BarChart, 
+  Activity, 
+  Compass, 
+  FileCheck 
 } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════
    UPDATES & INTELLIGENCE DATA
    ═══════════════════════════════════════════════ */
 
-const NEWS_ITEMS = [
+const REPORTS = [
   {
-    id: 'news-1',
-    category: 'Market Insights',
-    date: 'OCT 14, 2026',
-    title: "Vanilla Supply Resilience: Evaluating Madagascar's 2026 Harvest.",
-    excerpt: "Current yield reports indicate a 12% increase in A-grade organic vanilla bean production, stabilizing global luxury confectionery chains and pricing volatility.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAczXK5RNkk8tZMa1UAgQnvbSt2wp3nDDX_D6CIu1ZV81aYt7rs2tQ7_i7FrrUogy6BFLoheH6w1texzHA9UL7_dWa1bts9of3IRRM_D2I9RMO9oQ1NEIIflj4n4am0fOutrntbp0U0eBjNRd-OeSb0sWc6oB6FQbsnzcgAYYq0k0WF3lE_ijvuQpkpl30npHHZkyYP7HPfaCm3csliRM3-IAB5w0gW4w_kjEG9SMTkZy_3hG7MLU-IsQNQlwgLUg8Q1q_pqnnBVWI",
-    btnLabel: "Read Analysis"
+    id: 'report-1',
+    category: 'Strategic Expansion',
+    date: 'MAY 2026',
+    title: 'Expanding into the European Luxury Market',
+    excerpt: 'Establishing new distribution representative hubs in Milan and Paris to bring our artisanal textiles and premium spices directly to the heart of European design capitals.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuACWGmuXEI33SdtyALNAQbWEcWxgR4SYDjOFFT-WIbVGmtdBlwL2JCGgcnccwnLfFxnzdw-vqfaSqQhTwlnB0rMDfUAPNVBsltYzAfjxZE5n-Vgu9N1ty3DqKPhNfYp-ikHDbCfIkBGmtCiDo1FUbICMiT2dDpXL1Q3Sr5NRIZuFcuCHcj9z3kxiDJQAFD90Gt64DWtne39J0yfqKMEV2hLeK-L6eHcnKxIKZVll08yhcWCfqw7VE-pjbTIyhbkcyaciQEX5Y_UNH0'
   },
   {
-    id: 'news-2',
-    category: 'Sustainability Milestones',
-    date: 'OCT 11, 2026',
-    title: "SpiceRoute Zero: Achieving 100% Carbon Neutrality in Sea Freight.",
-    excerpt: "Our primary spice routes between Cochin and Hamburg are now fully offset through our proprietary mangrove reforestation and restoration project in Kerala coastal zones.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAfyMo4CgJAOOtjMLX24QriULgAMlIkSuEUQ2thnGiP1JT18gXXQzC173vwzubqOAa2TTgcFEuSzezN0_10tj1lA4jY_u5S1tXKFetXIz2UYu4Sdlu-4t-EQMUlhfdaGEGf67d69tc_qjDifvTJE2T4apVmaQcjKndkaX8NZC7DtFw6m-bJZ-eI22J1T_2PzfDW6s4k5Zyq1rzy9GtnDy7X5OtmYguHTBZk1X8pO3Dg_s7A53dlOs_UwmWkrqocMUCAR3mJPZilRfw",
-    btnLabel: "View Roadmap"
+    id: 'report-2',
+    category: 'Sustainability',
+    date: 'APRIL 2026',
+    title: 'New Sustainable Sourcing Initiative for Textiles & Carpets',
+    excerpt: 'Collaborating directly with organic merino wool family clusters in Rajasthan to introduce certified eco-friendly, carbon-offset balings for global trade relief desks.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBrIXmobi_B7kbYPeViidzUhUGVP1nZMRfLAvMkg3_ca4iZwTQu4mGCzCaP_ZHSSq104Tk67uIfZaP22VfelB6H1MG-BYzdAv2cIdirerqyDlMWyHuSZhLVYDjHXU1Bv7sl2WXu1TIThFmlTgEhLmaX4_HusjEWqp1QPHIH_9Fl3jHqGtL9M2o22LYgBkRMRZ5sbJOUQrFes9qf8EgoLGoAFoDG9ep_xC3x4EuLUimAzu2vykT00xRnCDKtCqxiar1aobwYKrp-Nl8'
   },
   {
-    id: 'news-3',
-    category: 'Company Announcements',
-    date: 'OCT 08, 2026',
-    title: "Expansion: New Regional Logistics Hub in Singapore Now Operational.",
-    excerpt: "The 50,000 sq. ft. high-precision temperature-controlled facility will halve lead times and guarantee volatile oil preservation for Asia-Pacific institutional partners.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBBjA3T8i5n8ZG364PUsO4bgpz1sSarPZufKssbRXP_MSR4Mj49XaFafasov4VPkdZjI3Ks0vUbCEN5tlsA1-pnzJO1URi30DnMPmPrLCqOABnsvThlf3rkChtOnos_u9vSAOTPDVI28eGw10QarqWLRemEM8OJOazD-xctHLGl9pAdxpvTFMqwHeSfvhp2Dkf_uzxIdKoiZGD0JsHubF83K-Wv75_-Do73US0wbOUWgCjHURywW370yRCQFGoX4XDNLS-RrrsWBYM",
-    btnLabel: "Explore Hub"
+    id: 'report-3',
+    category: 'Corporate Growth',
+    date: 'MARCH 2026',
+    title: 'Q3 Export Growth Report: Saffron & Blanket Pipelines',
+    excerpt: 'An authoritative review of our record-breaking performance in Asian and Middle Eastern sectors this quarter. Supply chains maintained 100% SLA adherence.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAklTeZcWDqRyLI3rfi7QO0CzzHsX1ge0fxbQI2dFO7dKp05AYoXo_NkebP4rDV0cHSKXFQmW6jARvqfxXYuRLYs7ohKJpz9Y_gp4HKtb5gp3CxmS0iK9OxI4IYjPrbA5VIMm3WCBWB9G756Mtg3jHEWy5orvN8sw_3DOcHKjGfTPR8qPOTm2Sml6EFEuPKVEoYEQ9EkF0LLPb01VkBThPvdrlYs9FRbJvuXS-8e_Jdq0o9EWCb8Oa8gns2u7pCCqcNGFX_DFdfYnI',
+    downloadable: true,
+    fileSize: '4.2 MB'
   },
   {
-    id: 'news-4',
-    category: 'Market Insights',
-    date: 'SEP 30, 2026',
-    title: "Cassia vs. Ceylon: Predictive Demand Shifts in the North American Market.",
-    excerpt: "A technical deep dive into the regulatory changes and organic consumer health trends driving a 20% shift toward premium Ceylon cinnamon varieties across retail networks.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBSKYsOLBwQrVBwXAr3O-XJ05lY9ZoW9bxy8E9ShmhOA6mgteWDNabEx8_CidJhS4xDC-wr-7XDT1ICpMOvgHlZrjfxYHbCuaZ4vuYiIKatabmmM2lPiov68UDDqd8LNBWg3KCPxL5uWDWmrjUQ63zBwQAGrB97g_t2G69OAlq9aSwXqTK_FAohG9hYhQpPGN5378dJwJKujxhXVMaqeCYqHw26bC70rQDxqKhMWpFH-_dYkBr2w2SYHMIST0lFkWUCyyIw-hloJY8",
-    btnLabel: "Full Analysis",
-    span: "md:col-span-2 flex flex-col md:flex-row gap-8 pb-10"
-  },
-  {
-    id: 'news-5',
-    category: 'Logistics Reports',
-    date: 'SEP 24, 2026',
-    title: '"Efficiency is the silent ingredient in every spice we deliver."',
-    excerpt: "Streamlined customs clearance procedures implemented at Port of Rotterdam. Digital dockets are now pre-processed during high-sea transit.",
-    isQuote: true,
-    author: "Logistics Desk",
-    btnLabel: "Port Stats"
+    id: 'report-4',
+    category: 'Logistics Desk',
+    date: 'JANUARY 2026',
+    title: 'Visualizing Our Global Logistics Shipping Corridors',
+    excerpt: 'How RICHY EXPORTS delivers traditional agricultural grains and luxury custom textiles to 45+ partner countries through seamless sea clearances and digital dockets.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBU20AGb8m6oZ-3Osrq_xzEWmmGtHi27FcgjbEqZsVu1yYef1Q5tPiVeb45HB4uwW7igvjqqTc---afWRM9jUbRJnbtmjB0y2wr2zD_uRPQ-LTP7wBiwQPAWUVRSmTFp64s-zJY73yOFI5G5KB846rCXRQMX588tNxuMLwgPp2gjv2Kgo2iOL9L3KOEKs1UwEcg1tY8OmbiatqDpYXc9t4BrpX_IjUixCOEdNtSFBRAseiWjPjgm255aJ1gigIsSRBstiYyrH_IxUM'
   }
 ];
 
-const FILTERS = [
-  'All Intelligence',
-  'Market Insights',
-  'Sustainability Milestones',
-  'Company Announcements',
-  'Logistics Reports'
-];
-
-/* ═══════════════════════════════════════════════
-   ANIMATION CONFIGS
-   ═══════════════════════════════════════════════ */
+const CATEGORIES = ['All', 'Strategic Expansion', 'Sustainability', 'Corporate Growth', 'Logistics Desk'];
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }
+    transition: { duration: 0.8, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }
   })
 };
 
-/* ═══════════════════════════════════════════════
-   UPDATES PAGE
-   ═══════════════════════════════════════════════ */
-
 export default function Updates() {
-  const [selectedFilter, setSelectedFilter] = useState('All Intelligence');
-  const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [subscribeSubmitted, setSubscribeSubmitted] = useState(false);
+  const [email, setEmail] = useState('');
 
-  const [headerRef, headerInView] = useInView({ triggerOnce: true, threshold: 0.3 });
-  const [reportRef, reportInView] = useInView({ triggerOnce: true, threshold: 0.2 });
-  const [gridRef, gridInView] = useInView({ triggerOnce: true, threshold: 0.1 });
-  const [statsRef, statsInView] = useInView({ triggerOnce: true, threshold: 0.3 });
+  const [headerRef, headerInView] = useInView({ triggerOnce: true, threshold: 0.2 });
+  const [feedRef, feedInView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [transparencyRef, transparencyInView] = useInView({ triggerOnce: true, threshold: 0.15 });
 
-  // Filtering news
-  const filteredNews = useMemo(() => {
-    if (selectedFilter === 'All Intelligence') return NEWS_ITEMS;
-    return NEWS_ITEMS.filter(item => item.category.toLowerCase() === selectedFilter.toLowerCase());
-  }, [selectedFilter]);
+  const filteredReports = useMemo(() => {
+    return REPORTS.filter(rep => {
+      const matchesCategory = selectedCategory === 'All' || rep.category === selectedCategory;
+      const matchesSearch = rep.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           rep.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+  }, [selectedCategory, searchQuery]);
 
   const handleSubscribeSubmit = (e) => {
     e.preventDefault();
-    setNewsletterSubmitted(true);
+    setSubscribeSubmitted(true);
     setTimeout(() => {
-      setNewsletterSubmitted(false);
-      setNewsletterEmail('');
+      setSubscribeSubmitted(false);
+      setEmail('');
     }, 3500);
   };
 
   return (
-    <div className="relative min-h-screen bg-[#fbf9f4] overflow-hidden pt-[140px]">
-      <div className="absolute inset-0 grain-overlay pointer-events-none z-0" />
+    <div className="relative min-h-screen bg-[#fbf9f4] overflow-hidden pt-[120px]">
+      <div className="absolute inset-0 grain-overlay pointer-events-none z-0 opacity-5" />
 
-      {/* 1. HERO TITLE SECTION */}
+      {/* 1. HERO HEADER */}
       <section 
         ref={headerRef}
-        className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-16 md:mb-20 relative z-10"
+        className="px-6 max-w-7xl mx-auto mb-16 relative z-10"
       >
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <div className="max-w-3xl space-y-4">
-            <span className="font-mono text-xs tracking-[0.3em] text-[var(--gold)] font-bold block uppercase">
-              INTELLIGENCE & LOG
-            </span>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
+          <div className="md:col-span-8 space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--gold)]/10 text-[var(--gold)] font-mono text-xs uppercase tracking-[0.2em] mb-4">
+              <span className="w-2 h-2 bg-[var(--gold)] rounded-full animate-pulse" />
+              Corporate Intelligence
+            </div>
             <h1 className="font-display font-semibold text-[var(--text-dark)] leading-tight text-4xl md:text-6xl tracking-tight">
-              Global Updates & Announcements
+              Defining the Future of <span className="italic text-[var(--gold)]">Global Trade</span>.
             </h1>
           </div>
-          <div className="max-w-md pb-1">
-            <p className="font-body text-sm md:text-base text-[var(--text-muted)] leading-relaxed font-light">
-              Real-time market volatility analysis, milestone achievements, and the evolution of the modern spice route.
+          <div className="md:col-span-4 pb-1">
+            <p className="font-body text-sm text-[var(--text-muted)] leading-relaxed font-light">
+              Transparent reporting, logistics updates, and strategic announcements. RICHY EXPORTS continues to bridge historical craftsmanship with modern supply chain excellence.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 2. FEATURED EDITORIAL CARD */}
+      {/* 2. PINNED MAIN ANNOUNCEMENT GRID */}
       <section 
-        ref={reportRef}
-        className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-24 relative z-10"
+        ref={feedRef}
+        className="px-6 max-w-7xl mx-auto mb-24 relative z-10"
       >
-        <motion.div 
-          className="relative group overflow-hidden bg-[var(--midnight)] text-white flex flex-col md:flex-row h-auto md:h-[550px] border border-neutral-800"
-          initial={{ opacity: 0, y: 30 }}
-          animate={reportInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-        >
-          {/* Inner content */}
-          <div className="flex-1 p-10 md:p-14 flex flex-col justify-between z-10 relative">
-            <div className="space-y-6">
-              <span className="font-mono text-[9px] tracking-[0.25em] text-[var(--gold-light)] border border-[var(--gold-light)]/30 px-3.5 py-1.5 inline-block uppercase font-bold">
-                Quarterly Highlight
-              </span>
-              <h2 className="font-display text-2xl md:text-3xl font-medium text-cream leading-tight max-w-lg">
-                2026 Global Trade Report: Navigating the New Corridors of the Indo-Pacific.
-              </h2>
-              <p className="font-body text-xs md:text-sm text-neutral-400 leading-relaxed max-w-md font-light">
-                An in-depth analysis of maritime logistics shifts and the rising demand for high-grade organic cardamom and turmeric in European markets.
-              </p>
-            </div>
-            
-            <div className="pt-8">
-              <a 
-                href="/products" 
-                className="inline-flex items-center gap-3 group/btn font-mono text-[10px] tracking-wider uppercase text-[var(--gold-light)] hover:text-white transition-colors border-b border-[var(--gold-light)] pb-1 w-fit"
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-neutral-200 pb-6 mb-12">
+          {/* Categories Tab */}
+          <div className="flex gap-6 overflow-x-auto scrollbar-none py-1.5 w-full lg:w-auto">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`font-mono text-xs font-bold tracking-wider uppercase whitespace-nowrap pb-2 border-b-2 transition-all duration-200 outline-none ${
+                  selectedCategory === cat
+                    ? 'text-[var(--gold)] border-[var(--gold)]'
+                    : 'text-neutral-500 border-transparent hover:text-black'
+                }`}
               >
-                <span>Download Full Report</span>
-                <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-              </a>
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative w-full lg:w-80 flex items-center bg-white border border-neutral-300 px-4 py-2.5">
+            <Search className="w-4 h-4 text-neutral-400 mr-3 flex-shrink-0" />
+            <input 
+              type="text" 
+              placeholder="Search reports..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-transparent border-none text-xs focus:ring-0 w-full placeholder:text-neutral-400 outline-none"
+            />
+          </div>
+        </div>
+
+        {/* Reports Grid */}
+        <AnimatePresence mode="popLayout">
+          {filteredReports.length > 0 ? (
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-12 gap-8 gap-y-16"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+            >
+              {filteredReports.map((rep, i) => {
+                const isFeatured = i === 0 && searchQuery === '' && selectedCategory === 'All';
+                return (
+                  <motion.article
+                    key={rep.id}
+                    variants={fadeUp}
+                    custom={i}
+                    className={`group ${
+                      isFeatured ? 'md:col-span-12 grid md:grid-cols-2 gap-8 items-center border-b border-neutral-200 pb-12' : 'md:col-span-4 flex flex-col justify-between h-full border-b border-neutral-200 pb-8'
+                    }`}
+                  >
+                    {/* Visual */}
+                    <div className={`overflow-hidden border border-neutral-300 relative bg-white ${
+                      isFeatured ? 'aspect-[16/9]' : 'aspect-square mb-6'
+                    }`}>
+                      <img 
+                        src={rep.image} 
+                        alt={rep.title} 
+                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-[1s] group-hover:scale-103"
+                      />
+                      <div className="absolute top-4 left-4">
+                        <span className="bg-[var(--gold)] text-white font-mono text-[9px] uppercase tracking-widest px-3 py-1 font-bold">
+                          {rep.category}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Text Details */}
+                    <div className={isFeatured ? 'space-y-4' : 'flex-grow flex flex-col justify-between space-y-4'}>
+                      <div className="space-y-2">
+                        <span className="font-mono text-[9px] text-[var(--saffron)] tracking-[0.25em] font-bold block">
+                          {rep.date}
+                        </span>
+                        <h3 className={`font-display font-semibold text-neutral-850 group-hover:text-[var(--gold)] transition-colors ${
+                          isFeatured ? 'text-3xl md:text-4xl' : 'text-xl md:text-2xl leading-snug'
+                        }`}>
+                          {rep.title}
+                        </h3>
+                        <p className="font-body text-xs text-[var(--text-body)] leading-relaxed font-light line-clamp-3">
+                          {rep.excerpt}
+                        </p>
+                      </div>
+                      
+                      {rep.downloadable && (
+                        <div className="pt-4">
+                          <button className="inline-flex items-center gap-2 font-mono text-[10px] text-[var(--gold)] border-b border-[var(--gold)] pb-0.5 hover:border-b-2 font-bold uppercase transition-all">
+                            <Download size={12} /> DOWNLOAD REPORT PDF ({rep.fileSize})
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </motion.article>
+                );
+              })}
+            </motion.div>
+          ) : (
+            <div className="text-center py-24 border border-dashed border-neutral-300">
+              <Info className="w-12 h-12 mx-auto text-neutral-400 mb-4" />
+              <h3 className="font-display text-xl font-bold">No Intelligence Logged</h3>
+              <p className="text-xs text-neutral-500 mt-2 font-light">Refine your search term or select another category tab.</p>
+            </div>
+          )}
+        </AnimatePresence>
+      </section>
+
+      {/* 3. TRANSPARENCY SECTION */}
+      <section 
+        ref={transparencyRef}
+        className="px-6 max-w-7xl mx-auto py-24 relative z-10 border-t border-neutral-200"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          <div className="space-y-6">
+            <h2 className="font-display text-4xl md:text-5xl font-semibold leading-tight text-neutral-850 italic">
+              Unwavering Transparency for <span className="not-italic text-[var(--gold)]">Global Partners</span>.
+            </h2>
+            <p className="font-body text-base text-[var(--text-body)] font-light leading-relaxed">
+              Our commitment to B2B enterprise procurement extends far beyond raw commodity purity. We provide direct chemical traceability analysis, certificate files, and sustainable crop compensation transparency.
+            </p>
+            <div className="grid grid-cols-2 gap-8 pt-4">
+              <div>
+                <div className="font-display text-4xl text-[var(--gold)] font-bold mb-1">100%</div>
+                <div className="font-mono text-[9px] tracking-wider uppercase text-neutral-500 font-bold">Sourcing Traceability</div>
+              </div>
+              <div>
+                <div className="font-display text-4xl text-[var(--gold)] font-bold mb-1">SGS</div>
+                <div className="font-mono text-[9px] tracking-wider uppercase text-neutral-500 font-bold">Certified Compliance</div>
+              </div>
             </div>
           </div>
 
-          {/* Right Image */}
-          <div className="flex-1 relative overflow-hidden h-[300px] md:h-auto border-t md:border-t-0 md:border-l border-neutral-800">
-            <img 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuB76r3w6jP3xt2HqT-dRDUYkCF2i3RpT-5C9vKtD29qWwDFJxO6t-4TsjlTVHNSvd4n025Ct6annY2Wj0nksKdFSuoSFOY4vTqm84OAo0DiqbtLnxPqzuYR4Cw7RVhbBJB9sZa-urPGKpucKSWYu0Fr5A6WOVLQVpYEQC0qMyPJpe3u2SGGAcVBx-zqFpf5lep7PHPzeC2IrTh-iMhvNUm-HqaAfWvtI-npAPv-pNHueQaOBymAfwSN9L9F9PbB_RCYt20iTv8BpIE" 
-              alt="Saffron and peppercorns on bone-white stone surface" 
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-black/10" />
+          <div className="relative pl-0 md:pl-12">
+            <div className="p-10 bg-white border border-[var(--border-gold)] rotate-1 shadow-2xl relative">
+              <FileCheck className="text-[var(--gold)] mb-4 w-10 h-10" />
+              <blockquote className="font-display text-xl italic text-neutral-850 leading-relaxed mb-6">
+                "The logistical documentation and predictive cargo tracking supplied by RICHY EXPORTS is exceptional. Their B2B trade desk resolves clearance pre-processing on the high seas."
+              </blockquote>
+              <div className="flex items-center gap-4 border-t border-neutral-100 pt-4 text-xs">
+                <div className="w-10 h-10 bg-neutral-100 border border-neutral-300 rounded-none flex items-center justify-center">
+                  <span className="font-mono text-xs font-bold text-[var(--gold)]">PL</span>
+                </div>
+                <div>
+                  <h4 className="font-mono text-[10px] uppercase font-bold text-neutral-850">Directeur de Sourcing</h4>
+                  <p className="text-[var(--text-muted)] text-[10px]">Parisian Luxury Cosmetics Group</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </motion.div>
-      </section>
-
-      {/* 3. CATEGORY FILTERS */}
-      <section className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-10 relative z-10">
-        <div className="flex flex-wrap gap-x-10 gap-y-4 border-b border-neutral-200 pb-5 overflow-x-auto scrollbar-none">
-          {FILTERS.map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setSelectedFilter(filter)}
-              className={`font-mono text-[10px] font-bold tracking-wider uppercase whitespace-nowrap transition-all duration-200 pb-1.5 focus:outline-none ${
-                selectedFilter === filter
-                  ? 'text-[var(--gold)] border-b-2 border-[var(--gold)]'
-                  : 'text-neutral-500 hover:text-[var(--text-dark)] border-b-2 border-transparent'
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
         </div>
       </section>
 
-      {/* 4. NEWS ARTICLES GRID */}
-      <section 
-        ref={gridRef}
-        className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto mb-24 relative z-10"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-16 gap-x-8" id="news-grid">
-          <AnimatePresence mode="popLayout">
-            {filteredNews.map((item, i) => {
-              if (item.span) {
-                return (
-                  <motion.article 
-                    layout
-                    key={item.id}
-                    variants={fadeUp}
-                    initial="hidden"
-                    animate={gridInView ? 'visible' : 'hidden'}
-                    custom={i}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className={`${item.span} border-b border-neutral-200 pb-8 group`}
-                  >
-                    {/* Left image of bento */}
-                    <div className="flex-1 overflow-hidden aspect-video bg-[var(--cream-dark)] border border-neutral-300">
-                      <img 
-                        src={item.image} 
-                        alt={item.title} 
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    </div>
-                    {/* Right text of bento */}
-                    <div className="flex-1 flex flex-col justify-center space-y-4 mt-6 md:mt-0">
-                      <div className="flex justify-between items-center text-[10px] font-mono font-bold tracking-wider text-[var(--gold)]">
-                        <span>TECHNICAL ANALYSIS</span>
-                        <span className="text-neutral-400 font-normal">{item.date}</span>
-                      </div>
-                      <h3 className="font-display text-2xl font-semibold leading-tight text-[var(--text-dark)] group-hover:text-[var(--gold)] transition-colors duration-300">
-                        {item.title}
-                      </h3>
-                      <p className="font-body text-xs text-[var(--text-muted)] leading-relaxed">
-                        {item.excerpt}
-                      </p>
-                      <div className="pt-2">
-                        <a 
-                          href="/products" 
-                          className="font-mono text-[10px] tracking-wider uppercase text-[var(--gold)] hover:text-[var(--text-dark)] transition-colors border-b border-[var(--gold)] pb-0.5 inline-flex items-center gap-1.5 group/link"
-                        >
-                          <span>{item.btnLabel}</span>
-                          <ArrowRight size={12} className="group-hover/link:translate-x-1 transition-transform" />
-                        </a>
-                      </div>
-                    </div>
-                  </motion.article>
-                );
-              }
-
-              if (item.isQuote) {
-                return (
-                  <motion.article 
-                    layout
-                    key={item.id}
-                    variants={fadeUp}
-                    initial="hidden"
-                    animate={gridInView ? 'visible' : 'hidden'}
-                    custom={i}
-                    exit={{ opacity: 0 }}
-                    className="group flex flex-col h-full border-b border-neutral-200 pb-8"
-                  >
-                    <div className="flex-grow flex flex-col justify-center bg-[var(--cream-dark)] p-8 border border-neutral-300/50">
-                      <span className="font-mono text-[8px] font-bold tracking-widest text-[var(--gold)] uppercase block mb-4">LOGISTICS DIVISION</span>
-                      <h3 className="font-display text-lg italic text-[var(--text-dark)] leading-relaxed mb-4 group-hover:text-[var(--gold)] transition-colors duration-300">
-                        {item.title}
-                      </h3>
-                      <p className="font-body text-xs text-[var(--text-muted)] leading-relaxed mb-3">
-                        {item.excerpt}
-                      </p>
-                      <span className="font-mono text-[9px] text-neutral-400 block">— {item.author}</span>
-                    </div>
-                    <div className="mt-6">
-                      <a 
-                        href="/contact" 
-                        className="font-mono text-[10px] tracking-wider uppercase text-[var(--text-dark)] hover:text-[var(--gold)] transition-colors inline-flex items-center gap-1.5 group/link"
-                      >
-                        <span>{item.btnLabel}</span>
-                        <ArrowRight size={12} className="group-hover/link:translate-x-1 transition-transform" />
-                      </a>
-                    </div>
-                  </motion.article>
-                );
-              }
-
-              return (
-                <motion.article 
-                  layout
-                  key={item.id}
-                  variants={fadeUp}
-                  initial="hidden"
-                  animate={gridInView ? 'visible' : 'hidden'}
-                  custom={i}
-                  exit={{ opacity: 0 }}
-                  className="group flex flex-col h-full border-b border-neutral-200 pb-8"
-                >
-                  <div className="overflow-hidden aspect-[4/3] mb-6 bg-[var(--cream-dark)] border border-neutral-200">
-                    <img 
-                      src={item.image} 
-                      alt={item.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex-grow space-y-3">
-                    <div className="flex justify-between items-center text-[9px] font-mono font-bold tracking-wider text-[var(--gold)]">
-                      <span>{item.category}</span>
-                      <span className="text-neutral-400 font-normal">{item.date}</span>
-                    </div>
-                    <h3 className="font-display text-xl font-semibold leading-snug text-[var(--text-dark)] group-hover:text-[var(--gold)] transition-colors duration-300">
-                      {item.title}
-                    </h3>
-                    <p className="font-body text-xs text-[var(--text-muted)] leading-relaxed line-clamp-3">
-                      {item.excerpt}
-                    </p>
-                  </div>
-                  <div className="mt-6">
-                    <a 
-                      href="/products" 
-                      className="font-mono text-[10px] tracking-wider uppercase text-[var(--text-dark)] hover:text-[var(--gold)] transition-colors inline-flex items-center gap-1.5 group/link"
-                    >
-                      <span>{item.btnLabel}</span>
-                      <ArrowRight size={12} className="group-hover/link:translate-x-1 transition-transform" />
-                    </a>
-                  </div>
-                </motion.article>
-              );
-            })}
-          </AnimatePresence>
-        </div>
-      </section>
-
-      {/* 5. NEWSLETTER SUBSCRIPTION (The Trade Registry) */}
-      <section className="bg-[var(--midnight)] py-24 overflow-hidden relative z-10 border-t border-neutral-800">
+      {/* 4. NEWSLETTER BAND */}
+      <section className="py-24 bg-[var(--midnight)] text-cream text-center relative z-10 border-t border-neutral-800">
         <div className="absolute inset-0 grain-overlay opacity-30 pointer-events-none" />
         
-        {/* Background text decoration */}
-        <div className="absolute inset-0 opacity-5 pointer-events-none overflow-hidden flex items-end justify-center select-none z-0">
-          <div className="font-display font-semibold text-[18vw] text-white uppercase leading-none translate-y-12">SPICEROUTE</div>
-        </div>
+        <div className="container-custom max-w-xl space-y-6 relative z-10">
+          <Activity className="text-[var(--gold-light)] w-8 h-8 mx-auto mb-2" />
+          <h2 className="font-display text-3xl md:text-4xl font-semibold leading-tight text-white">
+            Quarterly Market Intelligence
+          </h2>
+          <p className="font-body text-xs text-neutral-400 leading-relaxed font-light">
+            Join 12,000+ institutional B2B buyers and supply executives receiving our proprietary market logs and maritime SLA schedules.
+          </p>
 
-        <div className="container-custom relative z-10 flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-          <div className="flex-1 space-y-6">
-            <span className="font-mono text-xs tracking-[0.3em] text-[var(--gold-light)] uppercase font-bold block">
-              THE TRADE REGISTRY
-            </span>
-            <h2 className="font-display text-3xl md:text-4xl font-medium text-cream leading-tight">
-              Weekly Market Intelligence. <br />Delivered to your terminal.
-            </h2>
-            <p className="font-body text-xs md:text-sm text-neutral-400 max-w-md leading-relaxed font-light">
-              Join 12,000+ B2B institutional spice buyers and supply chain executives receiving our proprietary market analysis and logistics intelligence.
-            </p>
-          </div>
-
-          <div className="flex-1 w-full max-w-lg">
-            {newsletterSubmitted ? (
-              <motion.div 
-                className="p-6 bg-neutral-800 border border-[var(--gold-light)]/30 text-[var(--gold-light)] flex items-center gap-3"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-              >
-                <CheckCircle2 className="w-8 h-8 flex-shrink-0 text-green-400 animate-pulse" />
-                <div>
-                  <h4 className="font-mono text-xs font-bold text-white uppercase">Subscription Registered</h4>
-                  <p className="text-[10px] text-neutral-400 mt-1">
-                    Terminal connected. Weekly market intelligence updates will deploy to your email folder.
-                  </p>
-                </div>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubscribeSubmit} className="space-y-12">
-                <div className="relative">
-                  <label className="font-mono text-[9px] tracking-wider text-neutral-500 uppercase block mb-1 font-bold">Email Address</label>
-                  <input 
-                    type="email" 
-                    required
-                    placeholder="trade@organization.com"
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    className="w-full bg-transparent border-0 border-b border-neutral-700 text-white py-3.5 focus:border-[var(--gold-light)] focus:ring-0 placeholder:text-neutral-700 outline-none transition-colors text-xs"
-                  />
-                </div>
-                <div className="flex flex-col gap-6">
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <input 
-                      type="checkbox" 
-                      required
-                      className="w-4 h-4 bg-transparent border-neutral-700 text-[var(--gold)] focus:ring-0 focus:ring-offset-0"
-                    />
-                    <span className="font-body text-xs text-neutral-400 group-hover:text-white transition-colors">
-                      I agree to receive weekly market volatility logs and maritime logistics reports.
-                    </span>
-                  </label>
-                  <button 
-                    type="submit"
-                    className="w-full py-4.5 bg-[var(--gold-light)] hover:bg-[var(--gold)] text-[var(--midnight)] font-mono text-[11px] font-bold tracking-wider uppercase transition-all duration-300"
-                  >
-                    SUBSCRIBE TO INTELLIGENCE
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. DATA STATS FOOTER ACCENT (Monospaced live statistics indicators) */}
-      <section 
-        ref={statsRef}
-        className="border-y border-neutral-200 py-10 bg-[#f5f3ee] relative z-10"
-      >
-        <div className="container-custom grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            { label: 'Live Shipments', value: '1,402' },
-            { label: 'Market Stability', value: '+2.4%' },
-            { label: 'Ports Operational', value: '48' },
-            { label: 'Active Trade Desk', value: '24/7' }
-          ].map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              className="text-center md:text-left space-y-1"
-              initial="hidden"
-              animate={statsInView ? 'visible' : 'hidden'}
-              variants={fadeUp}
-              custom={i}
+          {subscribeSubmitted ? (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="p-6 bg-neutral-800 border border-[var(--gold-light)]/20 text-[var(--gold-light)] text-xs font-mono"
             >
-              <span className="font-mono text-[9px] tracking-wider uppercase text-neutral-500 font-bold block">{stat.label}</span>
-              <span className="font-mono text-2xl md:text-3xl text-[var(--gold)] font-bold block">{stat.value}</span>
+              <CheckCircle2 size={24} className="text-green-500 mx-auto mb-2" />
+              <span>Subscription Registered. Dossiers will deploy directly to your terminal.</span>
             </motion.div>
-          ))}
+          ) : (
+            <form onSubmit={handleSubscribeSubmit} className="space-y-4 pt-4 text-xs font-mono">
+              <div className="flex border-b border-neutral-700 pb-2">
+                <input 
+                  type="email" 
+                  required
+                  placeholder="Email Address" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-transparent border-none text-white focus:ring-0 placeholder:text-neutral-700 outline-none w-full text-xs"
+                />
+                <button type="submit" className="text-[var(--gold-light)] hover:text-white transition-colors">
+                  <ArrowRight size={18} />
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </section>
-
     </div>
   );
 }

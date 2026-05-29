@@ -320,7 +320,7 @@ export default function Contact() {
                   <div>
                     <h3 className="font-display text-base font-bold text-neutral-850 mb-1.5">Registered Corporate Office</h3>
                     <p className="font-body text-neutral-500 leading-relaxed font-light">
-                      SpiceRoute Global Pvt. Ltd.<br />
+                      RICHY EXPORTS<br />
                       42 Spice Trade Avenue, Nungambakkam,<br />
                       Chennai 600034, Tamil Nadu, India.
                     </p>
@@ -336,15 +336,15 @@ export default function Contact() {
                 <div className="space-y-4 font-mono text-[11px]">
                   <div className="flex justify-between items-center pb-2.5 border-b border-neutral-100">
                     <span className="text-neutral-400">Head Office Phone:</span>
-                    <a href="tel:+914428204500" className="font-bold text-neutral-700 hover:text-[var(--saffron)] transition-colors">+91 44 2820 4500</a>
+                    <a href="tel:+919600852141" className="font-bold text-neutral-700 hover:text-[var(--saffron)] transition-colors">+91 96008 52141</a>
                   </div>
                   <div className="flex justify-between items-center pb-2.5 border-b border-neutral-100">
                     <span className="text-neutral-400">Official WhatsApp:</span>
-                    <a href="https://wa.me/919840012345" target="_blank" rel="noopener noreferrer" className="font-bold text-green-600 hover:text-[var(--saffron)] transition-colors">+91 98400 12345</a>
+                    <a href="https://wa.me/919600852141" target="_blank" rel="noopener noreferrer" className="font-bold text-green-600 hover:text-[var(--saffron)] transition-colors">+91 96008 52141</a>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-neutral-400">General Trade Email:</span>
-                    <a href="mailto:trade@spicerouteglobal.com" className="font-bold text-neutral-700 hover:text-[var(--saffron)] transition-colors">trade@spicerouteglobal.com</a>
+                    <a href="mailto:trade@richyexports.in" className="font-bold text-neutral-700 hover:text-[var(--saffron)] transition-colors">trade@richyexports.in</a>
                   </div>
                 </div>
               </div>
@@ -357,15 +357,15 @@ export default function Contact() {
                 <div className="grid grid-cols-2 gap-4 font-mono text-[10px]">
                   <div className="p-3 bg-[#f5f3ee] border border-neutral-100 rounded-none">
                     <span className="text-[9px] text-neutral-400 font-bold uppercase block mb-1">Whole Spices</span>
-                    <a href="mailto:whole@richyexports.in" className="font-bold text-neutral-600 hover:text-[var(--saffron)] break-all">whole@spiceroute.com</a>
+                    <a href="mailto:whole@richyexports.in" className="font-bold text-neutral-600 hover:text-[var(--saffron)] break-all">whole@richyexports.in</a>
                   </div>
                   <div className="p-3 bg-[#f5f3ee] border border-neutral-100 rounded-none">
                     <span className="text-[9px] text-neutral-400 font-bold uppercase block mb-1">Ground Spices</span>
-                    <a href="mailto:ground@richyexports.in" className="font-bold text-neutral-600 hover:text-[var(--saffron)] break-all">ground@spiceroute.com</a>
+                    <a href="mailto:ground@richyexports.in" className="font-bold text-neutral-600 hover:text-[var(--saffron)] break-all">ground@richyexports.in</a>
                   </div>
                   <div className="p-3 bg-[#f5f3ee] border border-neutral-100 rounded-none col-span-2">
                     <span className="text-[9px] text-neutral-400 font-bold uppercase block mb-1">Export Compliance</span>
-                    <a href="mailto:compliance@richyexports.in" className="font-bold text-neutral-600 hover:text-[var(--saffron)] break-all">compliance@spiceroute.com</a>
+                    <a href="mailto:compliance@richyexports.in" className="font-bold text-neutral-600 hover:text-[var(--saffron)] break-all">compliance@richyexports.in</a>
                   </div>
                 </div>
               </div>

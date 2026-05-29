@@ -6,7 +6,7 @@ import { Menu, X } from 'lucide-react';
 const navLinks = [
   { path: '/', label: 'Our Heritage' },
   { path: '/about', label: 'History & Story' },
-  { path: '/products', label: 'Spice Catalog' },
+  { path: '/products', label: 'Products Catalog' },
   { path: '/careers', label: 'Voyage Careers' },
   { path: '/updates', label: 'Market Updates' },
   { path: '/contact', label: 'Trading Desk' },
@@ -44,11 +44,11 @@ export default function Navbar() {
           {/* Brand Logo & Name */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 bg-[var(--midnight)] flex items-center justify-center border border-[var(--gold)]/30 group-hover:border-[var(--gold)] transition-colors duration-300">
-              <span className="font-display font-semibold text-xl text-[var(--gold)]">S</span>
+              <span className="font-display font-semibold text-xl text-[var(--gold)]">R</span>
             </div>
             <div>
-              <h2 className="font-display font-semibold text-[20px] text-[var(--text-dark)] leading-none tracking-tight">SpiceRoute Global</h2>
-              <span className="text-[9px] text-[var(--text-muted)] tracking-[.22em] font-mono uppercase block mt-1">EST. 1642 • CHENNAI PORT</span>
+              <h2 className="font-display font-semibold text-[20px] text-[var(--text-dark)] leading-none tracking-tight">RICHY EXPORTS</h2>
+              <span className="text-[9px] text-[var(--text-muted)] tracking-[.22em] font-mono uppercase block mt-1">EST. 2019 • CHENNAI PORT</span>
             </div>
           </Link>
 

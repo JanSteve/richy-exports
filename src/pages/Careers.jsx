@@ -1,101 +1,90 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { 
-  ArrowRight, 
+  Briefcase, 
   MapPin, 
-  ArrowRightLeft, 
-  Sparkles, 
-  Award, 
-  Globe, 
-  Building2, 
-  ShieldCheck, 
-  BrainCircuit, 
-  ChevronRight,
-  UploadCloud,
-  FileCheck,
-  X
+  Clock, 
+  Heart, 
+  Plane, 
+  GraduationCap, 
+  TrendingUp, 
+  X, 
+  CheckCircle2, 
+  ChevronDown 
 } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════
    CAREERS DATA
    ═══════════════════════════════════════════════ */
 
-const POSITIONS = [
+const OPEN_POSITIONS = [
   {
-    id: 'supply-chain-arch',
-    code: 'SR-2024-081',
-    title: 'Supply Chain Architect',
-    department: 'Logistics',
-    location: 'Rotterdam, Netherlands (Hybrid)',
-    type: 'Full-Time',
-    desc: 'Redefine maritime trade routes and terminal routing programs to minimize fuel, maximize speed, and ensure absolute temperature integrity for organic cargo shipments.',
-    requirements: ['8+ years in global maritime logistics or bulk container fleet operations', 'Deep expertise in route optimization tools and marine scheduling software', 'Masters degree in Logistics Management or Maritime Systems']
+    id: 'supply-chain',
+    title: 'Global Supply Chain Manager',
+    dept: 'Operations & Sourcing',
+    location: 'London, UK (Mayfair)',
+    type: 'Full-Time · MNC Grade',
+    desc: 'Command the B2B maritime supply chain and sifting log coordination between South Asia and European distribution centers. Ensure 100% SLA adherence and cost-optimal scheduling.',
+    reqs: [
+      '6+ years in bulk food, raw commodity, or luxury textile maritime shipping.',
+      'Rigid expertise in trade compliance, customs clearance, and global port operations.',
+      'Strong B2B relationship skills with global freight networks.'
+    ]
   },
   {
-    id: 'blockchain-eng',
-    code: 'SR-2024-112',
-    title: 'Lead Blockchain Engineer',
-    department: 'Tech',
-    location: 'Remote / Singapore',
-    type: 'Full-Time',
-    desc: 'Pioneer our cryptographic ledger supply chain pipeline. Guarantee 100% immutable origin-to-port traceability for high-value organic botanical consignments.',
-    requirements: ['5+ years writing production-grade smart contracts and ledger pipelines', 'Deep understanding of Solidity, Rust, and distributed ledger systems', 'Prior history building trade-finance or tracking supply contracts']
+    id: 'textile-designer',
+    title: 'Luxury Textile & Rug Designer',
+    dept: 'Product & Design',
+    location: 'Milan, Italy',
+    type: 'Full-Time / Contract',
+    desc: 'Lead the visual design and pattern curation of our bespoke hand-knotted silk carpet collections and merino blankets. Bridge traditional Indian weaving archival art with contemporary European high-end architectures.',
+    reqs: [
+      'Degree in Textile Design or fine arts with a focus on woven materials.',
+      'Detailed portfolio in luxury interior carpet layouts and artisanal materials.',
+      'Expertise in traditional weaving grids and organic dye chemistry.'
+    ]
   },
   {
-    id: 'grade-auditor',
-    code: 'SR-2024-045',
-    title: 'Spice Grade Auditor',
-    department: 'Quality Control',
-    location: 'Cochin, India',
-    type: 'Onsite',
-    desc: 'Supervise 27-point biochemical sensory panel checks at our Indian processing units. Oversee ASTA colorimetry, moisture profiling, and pesticide compliance checks.',
-    requirements: ['Degree in Food Science, Biochemistry, or Organic Chemistry', 'Certified experience in ISO 22000 and HACCP laboratory auditing protocols', 'Exceptional sensory acuity and deep understanding of dry botanical grading']
-  },
-  {
-    id: 'risk-analyst',
-    code: 'SR-2024-099',
-    title: 'Commodity Risk Analyst',
-    department: 'Trade',
-    location: 'London, UK (Hybrid)',
-    type: 'Full-Time',
-    desc: 'Forecast global spice commodity pricing shifts, climate disruptions, and currency volatility. Protect corporate margins and design risk frameworks for wholesale import groups.',
-    requirements: ['5+ years analyzing agricultural derivatives or soft commodities trade desk data', 'Strong mathematical modelling capabilities and statistical toolkit (R/Python)', 'Excellent presentation skills for briefing corporate buyers and boards']
+    id: 'spice-sourcing',
+    title: 'Regional Spice Sourcing Head',
+    dept: 'Sourcing & Quality',
+    location: 'Chennai Port HQ, India',
+    type: 'Full-Time · Corporate Desk',
+    desc: 'Direct collaborative sourcing networks across agricultural co-ops in 8 Indian states. Enforce 27-point laboratory quality controls (ASTA values, pesticide metrics, volatile oil levels) directly at harvest levels.',
+    reqs: [
+      'Degree in Food Science, Agronomy, or similar B2B agricultural logistics.',
+      '4+ years establishing direct-to-farm supply chain loops in South India.',
+      'Rigid understanding of ISO 22000, HACCP, and phytosanitary regulatory dockets.'
+    ]
   }
 ];
 
-const DEPARTMENTS = ['All Roles', 'Logistics', 'Trade', 'Quality Control', 'Tech'];
-
-const BentoItems = [
+const BENEFITS = [
   {
-    id: 'bento-1',
-    icon: Globe,
-    title: 'Global Mobility',
-    desc: 'Positions available across our primary hubs in Singapore, Rotterdam, Cochin, and Chennai.',
-    span: 'md:col-span-2 md:row-span-1'
+    icon: Heart,
+    title: 'Global Health Shield',
+    desc: 'Premium international health and wellness coverage for you and your direct dependents.'
   },
   {
-    id: 'bento-3',
-    label: '03 / BENEFITS',
-    title: 'Equity & Scale',
-    desc: 'Stakeholder equity participation models for all long-term trade and operations associates.',
-    span: 'md:col-span-1 md:row-span-1'
+    icon: Plane,
+    title: 'Heritage Immersion',
+    desc: 'Annual travel grants enabling our corporate specialists to visit cooperative farms, sifting hubs, and loom origins.'
   },
   {
-    id: 'bento-4',
-    icon: BrainCircuit,
-    title: 'Mastery Fund',
-    desc: 'Generous annual stipend covering advanced professional certification, customs certifications, and trade education.',
-    span: 'md:col-span-1 md:row-span-1'
+    icon: GraduationCap,
+    title: 'Executive Learning',
+    desc: '100% funded certifications with top-tier logistics and business institutions to foster leadership excellence.'
+  },
+  {
+    icon: TrendingUp,
+    title: 'Legacy Planning',
+    desc: 'Competitive performance equity programs, robust retirement packages, and trade desk incentives.'
   }
 ];
-
-/* ═══════════════════════════════════════════════
-   ANIMATION CONFIGS
-   ═══════════════════════════════════════════════ */
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 30 },
   visible: (i = 0) => ({
     opacity: 1,
     y: 0,
@@ -103,415 +92,368 @@ const fadeUp = {
   })
 };
 
-/* ═══════════════════════════════════════════════
-   CAREERS PAGE
-   ═══════════════════════════════════════════════ */
-
 export default function Careers() {
-  const [selectedDept, setSelectedDept] = useState('All Roles');
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    linkedin: '',
-    notes: ''
-  });
+  const [activeJob, setActiveJob] = useState(null);
+  const [applySubmitted, setApplySubmitted] = useState(false);
+  const [applyData, setApplyData] = useState({ name: '', email: '', role: '', cv: null, cover: '' });
+  const [expandedAccordion, setExpandedAccordion] = useState(null);
 
   const [headerRef, headerInView] = useInView({ triggerOnce: true, threshold: 0.2 });
-  const [bentoRef, bentoInView] = useInView({ triggerOnce: true, threshold: 0.15 });
-  const [listRef, listInView] = useInView({ triggerOnce: true, threshold: 0.15 });
-
-  // Filtering positions
-  const filteredPositions = useMemo(() => {
-    if (selectedDept === 'All Roles') return POSITIONS;
-    return POSITIONS.filter(job => job.department.toLowerCase() === selectedDept.toLowerCase());
-  }, [selectedDept]);
+  const [cultureRef, cultureInView] = useInView({ triggerOnce: true, threshold: 0.15 });
+  const [jobsRef, jobsInView] = useInView({ triggerOnce: true, threshold: 0.1 });
+  const [benefitsRef, benefitsInView] = useInView({ triggerOnce: true, threshold: 0.15 });
 
   const handleApplySubmit = (e) => {
     e.preventDefault();
-    setFormSubmitted(true);
+    setApplySubmitted(true);
     setTimeout(() => {
-      setFormSubmitted(false);
-      setSelectedJob(null);
-      setFormData({ name: '', email: '', linkedin: '', notes: '' });
-    }, 3000);
+      setApplySubmitted(false);
+      setActiveJob(null);
+      setApplyData({ name: '', email: '', role: '', cv: null, cover: '' });
+    }, 3500);
+  };
+
+  const toggleAccordion = (id) => {
+    if (expandedAccordion === id) {
+      setExpandedAccordion(null);
+    } else {
+      setExpandedAccordion(id);
+    }
   };
 
   return (
-    <div className="relative min-h-screen bg-[#fbf9f4] overflow-hidden pt-[80px]">
-      <div className="absolute inset-0 grain-overlay pointer-events-none z-0" />
+    <div className="relative min-h-screen bg-[#fbf9f4] overflow-hidden pt-[120px]">
+      <div className="absolute inset-0 grain-overlay pointer-events-none z-0 opacity-5" />
 
-      {/* 1. HERO SECTION */}
-      <header 
-        ref={headerRef}
-        className="relative max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 md:py-24 min-h-[600px] flex flex-col justify-center z-10"
-      >
-        <div className="grid md:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left Text */}
-          <div className="md:col-span-7 space-y-6">
-            <span className="font-mono text-xs tracking-[0.3em] text-[var(--gold)] font-bold block uppercase">
-              JOIN THE MODERN VOYAGE
-            </span>
-            <h1 
-              className="font-display font-semibold text-[var(--text-dark)] leading-[1.08] tracking-tight"
-              style={{ fontSize: 'clamp(38px, 6vw, 68px)' }}
-            >
-              Join the Modern <br />
-              <span className="italic font-normal text-[var(--saffron)]">Spice Route.</span>
-            </h1>
-            <p className="font-body text-base md:text-lg text-[var(--text-muted)] max-w-xl leading-relaxed font-light">
-              We are redefining the global trade of high-value raw materials. SpiceRoute Global combines centuries-old wisdom with cutting-edge logistical intelligence.
-            </p>
-            <div className="pt-4">
-              <a 
-                href="#positions" 
-                className="btn-primary bg-[var(--gold)] text-white hover:bg-[var(--midnight)] flex items-center gap-3 border-transparent"
-              >
-                VIEW OPPORTUNITIES <ArrowRight size={14} />
-              </a>
-            </div>
-          </div>
-
-          {/* Right Image */}
-          <div className="md:col-span-5 relative">
-            <div className="curtain-reveal aspect-[4/5] border border-neutral-300 shadow-sm overflow-hidden group active">
-              <img 
-                className="w-full h-full object-cover transition-transform duration-[2.5s] group-hover:scale-105" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAx2q4YCvxZrUzRNZz_eg3aNygw9ljD0Gluf-44px3FJ2efQx6vxfEMmce3xnfEX9YoxqX639auMZlJ_yPQPD6KsDw7UQBbJ0j6lAML2QR9N2DBmBOgS1zHn9Z0tHW1VMpZxYOsGXf_u94jj0U9MjXo6-mylRXvfxAy4P41j0aIueM9Lju_7GBzasY1ewpwb-RJAlohjoUjE3lVLSFs7xygtzijt0rNMjfHtNt1oCbUIvbtZSYsRtqOCIfRsg5KIgDib-W7RpMuAQg"
-                alt="Turmeric and whole cinnamon sticks in sharp geometric composition"
-              />
-            </div>
-            
-            {/* Direct Tech Stat block */}
-            <div className="absolute -bottom-6 -left-6 bg-[var(--midnight)] text-white p-6 border border-neutral-800 shadow-lg hidden md:block">
-              <span className="font-mono text-[9px] tracking-wider text-neutral-400 block mb-1">NETWORK LATENCY</span>
-              <span className="font-mono text-xl text-[var(--gold)] font-bold block">0.42ms</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* 2. GLOBAL CULTURE BENTO GRID */}
+      {/* 1. HERO HEADER */}
       <section 
-        ref={bentoRef}
-        className="section-padding border-t border-neutral-200"
+        ref={headerRef}
+        className="px-6 max-w-7xl mx-auto mb-16 relative z-10"
       >
-        <div className="container-custom">
-          <div className="mb-16 text-center max-w-2xl mx-auto space-y-4">
-            <span className="font-mono text-xs tracking-[0.25em] text-[var(--gold)] font-bold uppercase">CORPORATE ETHOS</span>
-            <h2 className="font-display text-3xl md:text-4xl font-medium text-[var(--text-dark)] leading-tight">
-              A Culture of Precision & Heritage
-            </h2>
-            <p className="font-body text-sm text-[var(--text-muted)] leading-relaxed">
-              Beyond the trade, we are a global collective of specialists, engineers, and visionaries dedicated to the art of the supply chain.
-            </p>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
+          <div className="md:col-span-8 space-y-4">
+            <span className="font-mono text-xs tracking-[0.3em] text-[var(--gold)] font-bold block uppercase">
+              GLOBAL CAREER PORTAL
+            </span>
+            <h1 className="font-display font-semibold text-[var(--text-dark)] leading-tight text-4xl md:text-6xl tracking-tight">
+              Join the Global Trade Leader
+            </h1>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-auto md:h-[750px]">
-            {/* Bento 1: Global Mobility */}
-            <div className="md:col-span-2 md:row-span-1 bg-[var(--cream-dark)] border border-neutral-300/60 p-10 flex flex-col justify-end group hover:bg-[var(--midnight)] hover:text-white transition-all duration-500">
-              <Globe className="w-10 h-10 text-[var(--gold)] group-hover:text-white mb-6 transition-colors duration-500" />
-              <h3 className="font-display text-2xl font-bold mb-3">Global Mobility</h3>
-              <p className="font-body text-xs text-[var(--text-muted)] group-hover:text-neutral-400 transition-colors leading-relaxed">
-                Positions available across our major logistical hubs in Singapore, Rotterdam, Cochin, and Chennai.
-              </p>
-            </div>
-
-            {/* Bento 2: Image Box (2 columns, 2 rows) */}
-            <div className="md:col-span-2 md:row-span-2 relative overflow-hidden border border-neutral-300">
-              <img 
-                className="w-full h-full object-cover grayscale-[0.1] hover:scale-105 transition-transform duration-[2s]" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_nWRxdwBo9SjtykjLiKc3UitfAmdlDWZmgITo1T5grCxGiIKEzAZ1K8GeNi1HilInHB6m75ZqWDdrcPg0X2P8EWn0gGAMtGj8eZUD-vj1_pUnCzv_nKBKHsg419Axayxaw-lmKJ1NbwXOeGw-I_1OxqPT9KPDYCjpuRamEfjTmdLuP6gPLM890N9rod1eXc5wD-caqsD4yC9ViY84nS_EIQimDKdIINC7h11vrBjURy_DioTTSlJoiN0aHX3IJUB-SGyvPMZQta4"
-                alt="SpiceRoute Global corporate office workspace design"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--midnight)]/80 via-transparent to-transparent" />
-              <div className="absolute bottom-8 left-8 right-8 text-white space-y-1">
-                <span className="font-mono text-[9px] tracking-wider text-neutral-400 block font-bold">OUR ENVIRONMENT</span>
-                <h4 className="font-display text-2xl italic font-normal text-cream">Designed for absolute focus.</h4>
-              </div>
-            </div>
-
-            {/* Bento 3: Equity */}
-            <div className="md:col-span-1 md:row-span-1 border border-neutral-300/60 p-10 flex flex-col justify-between hover:border-[var(--gold)] transition-colors duration-300">
-              <span className="font-mono text-[10px] tracking-wider text-[var(--gold)] font-bold">03 / BENEFITS</span>
-              <div className="space-y-2">
-                <h3 className="font-display text-xl font-bold text-[var(--text-dark)]">Equity & Scale</h3>
-                <p className="font-body text-xs text-[var(--text-muted)] leading-relaxed">
-                  Stakeholder capital participation for all long-term trade and operations associates.
-                </p>
-              </div>
-            </div>
-
-            {/* Bento 4: Mastery Fund */}
-            <div className="md:col-span-1 md:row-span-1 bg-[var(--midnight)] border border-neutral-800 text-white p-10 flex flex-col justify-between hover:border-[var(--gold)] transition-all duration-300">
-              <BrainCircuit className="w-10 h-10 text-[var(--gold)]" />
-              <div className="space-y-2">
-                <h3 className="font-display text-xl font-bold text-cream">Mastery Fund</h3>
-                <p className="font-body text-xs text-neutral-400 leading-relaxed">
-                  Annual stipend covering advanced certifications, logistics courses, and trade education.
-                </p>
-              </div>
-            </div>
+          <div className="md:col-span-4 pb-1">
+            <p className="font-body text-sm text-[var(--text-muted)] leading-relaxed font-light">
+              Forging connections between centuries-old craftsmanship and the modern global marketplace. We seek innovators to lead the future of international trade.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* 3. OPEN POSITIONS LIST */}
+      {/* 2. CORPORATE CULTURE (Bento Grid) */}
       <section 
-        id="positions"
-        ref={listRef}
-        className="section-padding bg-[var(--cream-dark)] border-t border-neutral-200"
+        ref={cultureRef}
+        className="px-6 max-w-7xl mx-auto mb-24 relative z-10"
       >
-        <div className="container-custom">
-          {/* Header & Filter Row */}
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
-            <div className="max-w-xl space-y-3">
-              <span className="font-mono text-xs tracking-[0.25em] text-[var(--gold)] font-bold uppercase">CAREER ROLES</span>
-              <h2 className="font-display text-3xl md:text-4xl font-medium text-[var(--text-dark)]">Open Positions</h2>
-              <p className="font-body text-xs md:text-sm text-[var(--text-muted)] leading-relaxed">
-                We are looking for individuals who balance technical rigor with a deep appreciation for the physical commodities market.
-              </p>
-            </div>
-
-            {/* Monospaced Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-              {DEPARTMENTS.map((dept) => (
-                <button
-                  key={dept}
-                  onClick={() => setSelectedDept(dept)}
-                  className={`px-5 py-2.5 font-mono text-[10px] font-bold tracking-wider uppercase transition-colors duration-200 focus:outline-none ${
-                    selectedDept === dept
-                      ? 'border-b-2 border-[var(--gold)] text-[var(--gold)]'
-                      : 'border-b-2 border-transparent text-neutral-500 hover:border-neutral-300 hover:text-[var(--text-dark)]'
-                  }`}
-                >
-                  {dept}
-                </button>
-              ))}
+        <div className="grid grid-cols-1 md:grid-cols-12 grid-rows-2 gap-8 h-auto md:h-[600px]">
+          {/* Item 1: Large Collaboration Banner */}
+          <div className="md:col-span-8 md:row-span-1 bg-neutral-900 border border-neutral-800 relative overflow-hidden group">
+            <img 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNg68OtShC3Ibm_Yib0yUoXPcMq4cuuRSA-DnJu6uuJCo1r_41Ep-rsfygwnCNbq5cNlD_1pq0sxb1rbQ150MR48iVxa_Pys40eMBL4UFaN36GrzGLeMJQbw_TxesOf923O-tTcCCW196QdLQGoq8plnsjcgkzEkmH4-vJ3KvGSLSrYfptDlxJvEeVaQs5mJFBzpTIfPQpNmzkYmShOLBnGPgd2P6nvgn8J8Urog9Phx5-2Oy9v5-gBSD-PSDXyLKJlA6-RNGM2D0" 
+              alt="RICHY EXPORTS diverse collaborative team workspace" 
+              className="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-[2.5s] group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
+            <div className="absolute bottom-8 left-8 right-8 z-10 text-white">
+              <h3 className="font-display text-2xl font-bold mb-1 group-hover:text-[var(--gold-light)] transition-colors">Collaborative Spirit</h3>
+              <p className="font-body text-xs text-neutral-300 max-w-md font-light">Diversity of thought and rigorous logistical metrics fuel our global expansion corridors.</p>
             </div>
           </div>
 
-          {/* Careers List Rows */}
-          <div className="border-t border-neutral-300">
-            {filteredPositions.map((job) => (
+          {/* Item 2: Vertical Reach stats */}
+          <div className="md:col-span-4 md:row-span-2 bg-[#f0eee9] p-8 md:p-10 border border-neutral-300 flex flex-col justify-between">
+            <div className="space-y-6">
+              <Globe className="text-[var(--gold)] w-10 h-10" />
+              <h3 className="font-display text-2xl font-bold text-neutral-850">Global Expansion</h3>
+              <p className="font-body text-xs text-[var(--text-body)] leading-relaxed font-light">
+                Operating across 45 countries, we offer high-performance international career paths with developmental rotation programs that span the globe from harvesting cooperatives to global corporate offices.
+              </p>
+            </div>
+            
+            <div className="border-t border-neutral-300 pt-6">
+              <div className="font-display text-5xl text-[var(--gold)] font-bold mb-1 leading-none">45+</div>
+              <div className="font-mono text-[9px] tracking-wider uppercase text-neutral-500 font-bold">Active Hub Nodes</div>
+            </div>
+          </div>
+
+          {/* Item 3: Heritage Principle */}
+          <div className="md:col-span-4 md:row-span-1 bg-white p-8 border border-neutral-300 flex flex-col justify-end space-y-4">
+            <Briefcase className="text-[var(--saffron)] w-8 h-8" />
+            <h3 className="font-display text-lg font-bold text-neutral-850">Heritage Sourcing</h3>
+            <p className="font-body text-xs text-[var(--text-muted)] leading-relaxed font-light">
+              We preserve traditional agricultural clusters and loom weavers while executing top-grade shipping.
+            </p>
+          </div>
+
+          {/* Item 4: Sustainability Banner */}
+          <div className="md:col-span-4 md:row-span-1 bg-[var(--midnight)] text-white p-8 border border-neutral-850 flex flex-col justify-end space-y-4">
+            <h3 className="font-display text-lg font-bold text-cream">Sourcing Sustainability</h3>
+            <p className="font-body text-xs text-neutral-400 leading-relaxed font-light">
+              Carbon neutral freight offsets and ethical farm compensation are built into our trade desk dockets.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. OPEN POSITIONS BOARD (Accordion Style) */}
+      <section 
+        ref={jobsRef}
+        className="section-padding bg-[#f5f3ee] border-y border-neutral-200 relative z-10"
+      >
+        <div className="container-custom">
+          <div className="text-center mb-16">
+            <span className="font-mono text-xs tracking-[0.3em] text-[var(--gold)] uppercase block mb-3 font-bold">
+              OFFERS
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl font-semibold text-neutral-850">
+              Open Positions
+            </h2>
+            <div className="h-[1.5px] w-24 bg-[var(--gold)] mx-auto mt-4"></div>
+          </div>
+
+          {/* Positions Accordion */}
+          <div className="max-w-4xl mx-auto space-y-6">
+            {OPEN_POSITIONS.map((job) => (
               <div 
                 key={job.id}
-                onClick={() => setSelectedJob(job)}
-                className="group border-b border-neutral-300/80 hover:bg-white transition-all duration-300 cursor-pointer overflow-hidden"
+                className="bg-white border border-neutral-300 overflow-hidden hover:border-[var(--gold)] transition-all duration-300 shadow-sm"
               >
-                <div className="flex flex-col md:flex-row md:items-center py-9 px-4 md:px-6 group-hover:px-8 transition-all">
-                  
-                  {/* Department & SKU Code */}
-                  <div className="md:w-1/4 mb-3 md:mb-0">
-                    <span className="font-mono text-[9px] tracking-wider text-[var(--gold)] font-bold block mb-1 uppercase">
-                      {job.department}
-                    </span>
-                    <span className="font-mono text-[11px] text-neutral-400">{job.code}</span>
-                  </div>
-
-                  {/* Title & Location */}
-                  <div className="md:w-2/4">
-                    <h3 className="font-display text-xl font-semibold text-[var(--text-dark)] group-hover:text-[var(--gold)] transition-colors duration-300">
+                {/* Header accordion trigger */}
+                <button 
+                  onClick={() => toggleAccordion(job.id)}
+                  className="w-full p-6 md:p-8 flex justify-between items-center text-left focus:outline-none"
+                >
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-2 text-[9px] font-mono font-bold uppercase tracking-wider">
+                      <span className="bg-[var(--gold)]/10 text-[var(--gold)] px-2 py-0.5">{job.dept}</span>
+                      <span className="bg-neutral-100 text-neutral-500 px-2 py-0.5">{job.location}</span>
+                    </div>
+                    <h3 className="font-display text-xl md:text-2xl font-bold text-neutral-850 group-hover:text-[var(--gold)]">
                       {job.title}
                     </h3>
-                    <p className="font-body text-xs text-neutral-500 mt-1">{job.location}</p>
                   </div>
+                  <ChevronDown 
+                    className={`text-neutral-400 w-5 h-5 transition-transform duration-300 ${
+                      expandedAccordion === job.id ? 'rotate-180 text-[var(--gold)]' : ''
+                    }`} 
+                  />
+                </button>
 
-                  {/* Apply Meta & Arrow */}
-                  <div className="md:w-1/4 mt-4 md:mt-0 flex md:justify-end items-center gap-4">
-                    <span className="font-mono text-[9px] tracking-wider text-neutral-400 font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      {job.type}
-                    </span>
-                    <span className="w-8 h-8 rounded-full border border-neutral-300 flex items-center justify-center bg-white group-hover:bg-[var(--gold)] group-hover:border-[var(--gold)] group-hover:text-white transition-all duration-300 transform group-hover:translate-x-1">
-                      <ChevronRight size={14} />
-                    </span>
-                  </div>
+                {/* Expanded container */}
+                <AnimatePresence initial={false}>
+                  {expandedAccordion === job.id && (
+                    <motion.div 
+                      initial={{ height: 0 }}
+                      animate={{ height: 'auto' }}
+                      exit={{ height: 0 }}
+                      transition={{ duration: 0.35, ease: 'easeInOut' }}
+                      className="border-t border-neutral-100"
+                    >
+                      <div className="p-6 md:p-8 space-y-6 text-xs leading-relaxed font-light text-[var(--text-body)]">
+                        <div className="space-y-2">
+                          <span className="font-mono text-[9px] text-neutral-400 uppercase tracking-widest font-bold block">
+                            ROLE DESCRIPTION
+                          </span>
+                          <p>{job.desc}</p>
+                        </div>
 
-                </div>
+                        <div className="space-y-3">
+                          <span className="font-mono text-[9px] text-neutral-400 uppercase tracking-widest font-bold block">
+                            REQUIREMENTS
+                          </span>
+                          <ul className="list-disc pl-5 space-y-1.5 text-neutral-600">
+                            {job.reqs.map((req, index) => (
+                              <li key={index}>{req}</li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="pt-4 flex justify-between items-center border-t border-neutral-100">
+                          <span className="font-mono text-[10px] text-neutral-500 font-bold">{job.type}</span>
+                          <button 
+                            onClick={() => setActiveJob(job)}
+                            className="btn-primary bg-neutral-900 border-neutral-900 text-white hover:bg-[var(--gold)] hover:border-[var(--gold)] px-6 py-2.5 font-mono text-[10px]"
+                          >
+                            APPLY TO ROLE
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Empty State */}
-          {filteredPositions.length === 0 && (
-            <div className="text-center py-16 bg-white/40 border border-dashed border-neutral-300 max-w-md mx-auto mt-6">
-              <p className="font-display text-lg font-bold text-neutral-700">No Roles Open</p>
-              <p className="font-body text-xs text-neutral-500 mt-1">Currently no vacancies in this division. Check our other roles.</p>
+      {/* 4. EMPLOYEE BENEFITS */}
+      <section 
+        ref={benefitsRef}
+        className="section-padding bg-[#fbf9f4] overflow-hidden relative z-10"
+      >
+        <div className="container-custom">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* List */}
+            <div className="space-y-10">
+              <h2 className="font-display text-4xl md:text-5xl font-semibold text-[var(--gold)] leading-tight">
+                Specialty Benefits & Perks
+              </h2>
+              
+              <ul className="space-y-8">
+                {BENEFITS.map((perk, i) => {
+                  const Icon = perk.icon;
+                  return (
+                    <motion.li 
+                      key={perk.title}
+                      className="flex gap-4 group"
+                      initial="hidden"
+                      animate={benefitsInView ? 'visible' : 'hidden'}
+                      variants={fadeUp}
+                      custom={i}
+                    >
+                      <div className="w-12 h-12 bg-[#f0eee9] border border-neutral-300 rounded-none flex items-center justify-center flex-shrink-0 group-hover:border-[var(--gold)] group-hover:scale-105 transition-all duration-300">
+                        <Icon className="w-5 h-5 text-[var(--gold)]" />
+                      </div>
+                      <div className="space-y-1">
+                        <h4 className="font-display text-lg font-bold text-neutral-850">{perk.title}</h4>
+                        <p className="font-body text-xs text-[var(--text-muted)] font-light leading-relaxed">{perk.desc}</p>
+                      </div>
+                    </motion.li>
+                  );
+                })}
+              </ul>
             </div>
-          )}
 
-          {/* General Application Callout */}
-          <div className="mt-16 text-center space-y-4">
-            <p className="font-body text-xs text-[var(--text-muted)]">Don't see a role that aligns with your trade specialization?</p>
-            <button 
-              onClick={() => setSelectedJob({ id: 'open-app', title: 'Open Trade Application', code: 'SR-OPEN', department: 'Global Trade Operations' })}
-              className="btn-secondary border-neutral-800 text-neutral-800 hover:bg-neutral-800 hover:text-white font-mono text-[11px]"
-            >
-              SEND AN OPEN APPLICATION
-            </button>
+            {/* Photo Box */}
+            <div className="relative">
+              <div className="overflow-hidden border-l-4 border-[var(--gold)] h-[550px] shadow-2xl">
+                <img 
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0gBVQrkA-HMvWizlWDYDnwxs09dUK3WN8lYfSI6zPoGzcoJPU1VSvliG6XIcP9oeKbPTeLrbPcGeL0J_YZbZnZMK6nDl-OqsMZDvXyB3AuUUN4kb43vpZSs9GysWjASKGHofz6432w5fvCYi13RWTE8O4DYRW9xbZcvi2txKTlcVKNgkqpEybKEyqt_Q4cEysAxvi9MJCa-4nVNogNlmdVh5k0lbOI2O8RCZo4UIBNuCYbd4xtgc9bWpGPnJUf-29M9MaEl0uPjk" 
+                  alt="Confident woman logistics professional in high-end B2B office environment" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="absolute -bottom-6 -left-6 bg-[var(--gold)] text-white p-6 border border-[var(--border-gold)] max-w-sm hidden md:block shadow-lg">
+                <p className="italic font-display text-sm">"Growth at RICHY is not just professional; it's cultural and long-term."</p>
+                <p className="font-mono text-[9px] uppercase tracking-widest mt-4 opacity-80 font-bold">— Sarah Jenkins, Sourcing & Logistics lead</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 4. SLIDING APPLICATION DRAWER MODAL (JS / React driven) */}
+      {/* 5. APPLICATION MODAL DRAWER */}
       <AnimatePresence>
-        {selectedJob && (
-          <div className="fixed inset-0 z-[99999] flex justify-end">
-            
-            {/* Backdrop overlay */}
+        {activeJob && (
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+            {/* Backdrop */}
             <motion.div 
-              className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setSelectedJob(null)}
+              onClick={() => setActiveJob(null)}
+              className="absolute inset-0 bg-neutral-950/70 backdrop-blur-sm"
             />
 
-            {/* Sidebar drawer */}
+            {/* Form Drawer */}
             <motion.div 
-              className="relative w-full md:w-[600px] bg-white h-full shadow-2xl z-10 flex flex-col p-8 md:p-12"
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', stiffness: 260, damping: 30 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: 'spring', duration: 0.6 }}
+              className="relative bg-white border border-[var(--border-gold)] w-full max-w-lg p-8 md:p-10 rounded-none shadow-2xl z-10"
             >
-              <div className="absolute inset-0 grain-overlay opacity-[0.02] pointer-events-none" />
-
-              {/* Close Button */}
               <button 
-                onClick={() => setSelectedJob(null)}
-                className="self-end mb-8 flex items-center gap-1.5 text-neutral-400 hover:text-[var(--text-dark)] focus:outline-none font-mono text-[10px] tracking-wider uppercase font-bold group"
+                onClick={() => setActiveJob(null)}
+                className="absolute top-6 right-6 w-8 h-8 rounded-full flex items-center justify-center hover:bg-neutral-100 transition-colors"
               >
-                <span>CLOSE</span>
-                <X size={14} className="group-hover:text-[var(--gold)] transition-colors" />
+                <X size={18} />
               </button>
 
-              <div className="flex-1 overflow-y-auto pr-2 scrollbar-none space-y-8">
-                
-                {/* Job Title & Division Info */}
-                <div>
-                  <span className="font-mono text-[9px] tracking-wider text-[var(--gold)] font-bold block uppercase mb-1">
-                    {selectedJob.code} / {selectedJob.department}
-                  </span>
-                  <h3 className="font-display text-2xl md:text-3xl font-bold text-[var(--text-dark)] mb-4">
-                    {selectedJob.title}
-                  </h3>
-                  
-                  {selectedJob.desc && (
-                    <p className="font-body text-xs text-[var(--text-muted)] leading-relaxed">
-                      {selectedJob.desc}
-                    </p>
-                  )}
-                </div>
-
-                {/* Requirements */}
-                {selectedJob.requirements && (
-                  <div className="space-y-3">
-                    <h4 className="font-mono text-[10px] tracking-wider text-neutral-400 font-bold uppercase">Target Profile & Requirements</h4>
-                    <ul className="space-y-2 text-xs text-neutral-600 list-disc pl-4 leading-relaxed font-body">
-                      {selectedJob.requirements.map((req, i) => (
-                        <li key={i}>{req}</li>
-                      ))}
-                    </ul>
+              {applySubmitted ? (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center space-y-4 py-8"
+                >
+                  <CheckCircle2 size={48} className="text-green-600 mx-auto animate-pulse" />
+                  <h3 className="font-display text-2xl font-bold text-neutral-850">Application Logged</h3>
+                  <p className="font-body text-xs text-neutral-500 leading-relaxed font-light px-4">
+                    Your profile has been logged on the **RICHY EXPORTS** Trade Registry. Our logistics and HR lead will review your coordinates and contact you.
+                  </p>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleApplySubmit} className="space-y-5 text-xs text-neutral-800">
+                  <div className="space-y-1">
+                    <span className="font-mono text-[9px] text-[var(--gold)] uppercase tracking-wider font-bold block">
+                      JOIN THE VOYAGE
+                    </span>
+                    <h3 className="font-display text-2xl font-bold italic border-b border-neutral-100 pb-3">
+                      Apply to {activeJob.title}
+                    </h3>
                   </div>
-                )}
 
-                {/* Application Form */}
-                <div className="border-t border-neutral-200 pt-8">
-                  <h4 className="font-mono text-[10px] tracking-wider text-[var(--gold)] font-bold uppercase mb-6">SUBMIT DOCKET & RESUME</h4>
+                  <div className="space-y-1.5">
+                    <label className="font-mono text-[9px] tracking-wider text-neutral-400 uppercase font-bold">Full Name</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={applyData.name}
+                      onChange={(e) => setApplyData({...applyData, name: e.target.value})}
+                      placeholder="Jane Doe" 
+                      className="w-full bg-transparent border-0 border-b border-neutral-300 py-2 outline-none focus:border-[var(--gold)] text-neutral-800 transition-colors"
+                    />
+                  </div>
 
-                  {formSubmitted ? (
-                    <motion.div 
-                      className="p-6 bg-green-50 border border-green-200 text-green-800 flex items-center gap-3"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                    >
-                      <FileCheck className="w-8 h-8 text-green-500 flex-shrink-0" />
-                      <div>
-                        <h5 className="font-bold text-xs">Application Received Successfully</h5>
-                        <p className="text-[10px] text-green-600/80 mt-0.5">
-                          Your profile has been logged on the SpiceRoute Trade registry. Our logistics lead 
-                          will contact you for standard video screening.
-                        </p>
-                      </div>
-                    </motion.div>
-                  ) : (
-                    <form onSubmit={handleApplySubmit} className="space-y-6">
-                      
-                      {/* Name */}
-                      <div className="relative">
-                        <label className="font-mono text-[9px] tracking-wider text-neutral-400 font-bold uppercase block mb-1">Full Name *</label>
-                        <input 
-                          type="text" 
-                          required
-                          placeholder="e.g. Richard Hendricks"
-                          value={formData.name}
-                          onChange={(e) => setFormData({...formData, name: e.target.value})}
-                          className="w-full bg-transparent border-0 border-b border-neutral-300 py-2.5 focus:ring-0 focus:border-[var(--gold)] placeholder-neutral-300 text-xs focus:outline-none transition-colors"
-                        />
-                      </div>
+                  <div className="space-y-1.5">
+                    <label className="font-mono text-[9px] tracking-wider text-neutral-400 uppercase font-bold">Email Address</label>
+                    <input 
+                      type="email" 
+                      required
+                      value={applyData.email}
+                      onChange={(e) => setApplyData({...applyData, email: e.target.value})}
+                      placeholder="applicant@domain.com" 
+                      className="w-full bg-transparent border-0 border-b border-neutral-300 py-2 outline-none focus:border-[var(--gold)] text-neutral-800 transition-colors"
+                    />
+                  </div>
 
-                      {/* Email */}
-                      <div className="relative">
-                        <label className="font-mono text-[9px] tracking-wider text-neutral-400 font-bold uppercase block mb-1">Business Email *</label>
-                        <input 
-                          type="email" 
-                          required
-                          placeholder="e.g. richard@piedpiper.com"
-                          value={formData.email}
-                          onChange={(e) => setFormData({...formData, email: e.target.value})}
-                          className="w-full bg-transparent border-0 border-b border-neutral-300 py-2.5 focus:ring-0 focus:border-[var(--gold)] placeholder-neutral-300 text-xs focus:outline-none transition-colors"
-                        />
-                      </div>
+                  <div className="space-y-1.5">
+                    <label className="font-mono text-[9px] tracking-wider text-neutral-400 uppercase font-bold">Attach CV / Dossier (PDF)</label>
+                    <input 
+                      type="file" 
+                      required
+                      onChange={(e) => setApplyData({...applyData, cv: e.target.files[0]})}
+                      className="w-full py-2 text-neutral-500 font-mono text-[10px]"
+                    />
+                  </div>
 
-                      {/* LinkedIn */}
-                      <div className="relative">
-                        <label className="font-mono text-[9px] tracking-wider text-neutral-400 block mb-1 uppercase font-bold">LinkedIn or Portfolio URL</label>
-                        <input 
-                          type="url" 
-                          placeholder="e.g. https://linkedin.com/in/richard"
-                          value={formData.linkedin}
-                          onChange={(e) => setFormData({...formData, linkedin: e.target.value})}
-                          className="w-full bg-transparent border-0 border-b border-neutral-300 py-2.5 focus:ring-0 focus:border-[var(--gold)] placeholder-neutral-300 text-xs focus:outline-none transition-colors"
-                        />
-                      </div>
+                  <div className="space-y-1.5">
+                    <label className="font-mono text-[9px] tracking-wider text-neutral-400 uppercase font-bold">Statement of Impact</label>
+                    <textarea 
+                      value={applyData.cover}
+                      onChange={(e) => setApplyData({...applyData, cover: e.target.value})}
+                      placeholder="Summarize your credentials and shipping expertise..." 
+                      rows={3}
+                      className="w-full bg-transparent border-0 border-b border-neutral-300 py-2 outline-none focus:border-[var(--gold)] text-neutral-800 transition-colors resize-none text-[11px]"
+                    />
+                  </div>
 
-                      {/* Cover Notes */}
-                      <div className="relative">
-                        <label className="font-mono text-[9px] tracking-wider text-neutral-400 block mb-1 uppercase font-bold">Cover Notes / Trade Experience Summary</label>
-                        <textarea 
-                          rows="3"
-                          placeholder="Tell us about your soft commodities trading or supply chain architectural experience..."
-                          value={formData.notes}
-                          onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                          className="w-full bg-transparent border-0 border-b border-neutral-300 py-2.5 focus:ring-0 focus:border-[var(--gold)] placeholder-neutral-300 text-xs focus:outline-none transition-colors resize-none"
-                        />
-                      </div>
-
-                      {/* File Upload mock */}
-                      <div className="space-y-2">
-                        <label className="font-mono text-[9px] tracking-wider text-neutral-400 block uppercase font-bold">Curriculum Vitae / Resume *</label>
-                        <div className="border border-dashed border-neutral-300 p-6 text-center hover:border-[var(--gold)] transition-colors cursor-pointer group flex flex-col items-center justify-center">
-                          <UploadCloud className="w-8 h-8 text-neutral-300 group-hover:text-[var(--gold)] transition-colors mb-2" />
-                          <p className="text-[11px] text-neutral-500 font-body">Drag and drop your file or <span className="text-[var(--gold)] font-bold underline">browse files</span></p>
-                          <span className="text-[9px] text-neutral-400 mt-1 uppercase font-mono">PDF, DOCX formats (Max 5MB)</span>
-                        </div>
-                      </div>
-
-                      {/* Submit */}
-                      <button 
-                        type="submit"
-                        className="w-full py-4 bg-[var(--gold)] text-white hover:bg-[var(--midnight)] font-mono text-[11px] font-bold tracking-wider uppercase transition-colors duration-300"
-                      >
-                        SUBMIT APPLICATION
-                      </button>
-
-                    </form>
-                  )}
-                </div>
-
-              </div>
+                  <button 
+                    type="submit"
+                    className="w-full py-4.5 bg-[var(--gold)] text-white hover:bg-neutral-900 font-mono text-[10px] uppercase tracking-widest font-bold transition-all duration-300 mt-4"
+                  >
+                    SUBMIT APPLICATION DOSSIER
+                  </button>
+                </form>
+              )}
             </motion.div>
           </div>
         )}

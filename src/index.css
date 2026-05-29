@@ -10,25 +10,25 @@
 
 :root {
   /* Colors */
-  --midnight: #1B1C19;          /* Peppercorn Black (High-Contrast Text / Dark Base) */
-  --cream: #FBF9F4;             /* Bone White primary canvas */
-  --cream-dark: #F0EEE9;        /* Warm Stone (surface-container) */
-  --cream-light: #FFFDF9;       /* surface-container-lowest */
-  --gold: #825500;              /* Saffron Gold primary */
-  --gold-light: #C18B37;        /* Saffron Gold container */
-  --saffron: #C8501A;           /* Deep Saffron accent */
-  --cardamom: #466557;          /* Cardamom Green secondary */
-  --cardamom-light: #C5E7D6;    /* Secondary Container */
-  --border: rgba(27, 28, 25, 0.15); /* Dust border - 15% Peppercorn Black */
-  --border-gold: rgba(130, 85, 0, 0.25);
+  --midnight: #1B1C19;          /* Peppercorn Black / Star Anise Black */
+  --cream: #FBF9F4;             /* Parchment White canvas */
+  --cream-dark: #F0EEE9;        /* Surface Container */
+  --cream-light: #FFFDF9;       /* Surface Container Lowest */
+  --gold: #795921;              /* Saffron Gold primary (Stitch value) */
+  --gold-light: #C59D5F;        /* Saffron Gold container (Stitch value) */
+  --saffron: #8b4d42;           /* Cinnamon Brown secondary (Stitch value) */
+  --cardamom: #5f5e5e;          /* Star Anise Grey (Stitch value) */
+  --cardamom-light: #A5A3A3;    /* Tertiary Container */
+  --border: rgba(128, 117, 104, 0.2); /* Stitch outline */
+  --border-gold: rgba(121, 89, 33, 0.25);
   --text-dark: #1B1C19;
-  --text-body: #30312E;
-  --text-muted: #6E706A;
+  --text-body: #4E4539;         /* Stitch on-surface-variant */
+  --text-muted: #807568;        /* Stitch outline */
   
   /* Fonts */
-  --font-display: 'Bodoni Moda', serif;
-  --font-body: 'Hanken Grotesk', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'Montserrat', sans-serif;
   
   /* Spacing */
   --stack-lg: 120px;

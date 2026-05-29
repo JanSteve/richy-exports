@@ -41,15 +41,15 @@ export default function Footer() {
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-neutral-900 border border-neutral-800 flex items-center justify-center">
-                <span className="font-display font-semibold text-xl text-[var(--gold)]">S</span>
+                <span className="font-display font-semibold text-xl text-[var(--gold)]">R</span>
               </div>
               <div>
-                <h4 className="font-display font-semibold text-[17px] text-[var(--cream)]">SpiceRoute Global</h4>
-                <span className="text-[9px] text-neutral-400 tracking-[0.2em] font-mono uppercase">MNC LOGISTICS HUB</span>
+                <h4 className="font-display font-semibold text-[17px] text-[var(--cream)]">RICHY EXPORTS</h4>
+                <span className="text-[9px] text-neutral-400 tracking-[0.2em] font-mono uppercase">GLOBAL SPICE & TEXTILE EXPORTS</span>
               </div>
             </div>
             <p className="text-xs text-neutral-400 leading-relaxed mb-6">
-              Pioneering the next era of high-precision spice logistics, sustainable farm sourcing, and global B2B trade of premium raw materials. Since 1642.
+              Pioneering the next era of high-precision spice and textile trade, sustainable farm sourcing, and global B2B supply of premium materials. Founded 2019.
             </p>
             
             {/* Certifications Block */}
@@ -73,7 +73,7 @@ export default function Footer() {
               {[
                 { to: '/', label: 'Our Heritage' },
                 { to: '/about', label: 'History & Story' },
-                { to: '/products', label: 'Spice Catalog' },
+                { to: '/products', label: 'Products Catalog' },
                 { to: '/careers', label: 'Voyage Careers' },
                 { to: '/updates', label: 'Market Updates' },
                 { to: '/contact', label: 'Trading Desk' },
@@ -93,21 +93,21 @@ export default function Footer() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h5 className="font-mono text-[10px] text-[var(--gold)] tracking-[0.25em] mb-6 uppercase font-bold">SPICE REGIONS</h5>
+            <h5 className="font-mono text-[10px] text-[var(--gold)] tracking-[0.25em] mb-6 uppercase font-bold">EXPORTS CATALOG</h5>
             <ul className="space-y-3 font-mono text-[11px] tracking-wider uppercase">
               {[
                 'Kashmir Saffron',
                 'Erode Turmeric',
                 'Guntur Red Chili',
                 'Tellicherry Black Pepper',
-                'Idukki Cardamom',
-                'Kerala Cinnamon',
+                'Artisanal Silk Carpets',
+                'Premium Merino Blankets',
                 'Gujarat Cumin Seeds',
-                'Kottayam Mace & Cloves'
-              ].map((spice) => (
-                <li key={spice}>
+                'Being Human Spices'
+              ].map((item) => (
+                <li key={item}>
                   <Link to="/products" className="text-neutral-400 hover:text-[var(--gold)] transition-colors duration-300">
-                    {spice}
+                    {item}
                   </Link>
                 </li>
               ))}
@@ -125,27 +125,27 @@ export default function Footer() {
               <div className="flex items-start gap-3">
                 <MapPin size={14} className="text-[var(--gold)] mt-1 flex-shrink-0" />
                 <p className="text-neutral-400 leading-relaxed">
-                  SpiceRoute Global Hub,<br />
+                  RICHY EXPORTS Global Hub,<br />
                   42 Spice Trade Avenue, Nungambakkam,<br />
                   Chennai 600034, Tamil Nadu, India
                 </p>
               </div>
               <div className="flex items-center gap-3">
                 <Phone size={14} className="text-[var(--gold)] flex-shrink-0" />
-                <a href="tel:+914428204500" className="text-neutral-400 hover:text-[var(--gold)] transition-colors">
-                  +91 44 2820 4500
+                <a href="tel:+919600852141" className="text-neutral-400 hover:text-[var(--gold)] transition-colors">
+                  +91 96008 52141
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <Mail size={14} className="text-[var(--gold)] flex-shrink-0" />
                 <a href="mailto:trade@richyexports.in" className="text-neutral-400 hover:text-[var(--gold)] transition-colors break-all">
-                  trade@spicerouteglobal.com
+                  trade@richyexports.in
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <Globe size={14} className="text-[var(--gold)] flex-shrink-0" />
                 <span className="text-neutral-400">
-                  www.spicerouteglobal.com
+                  www.richyexports.in
                 </span>
               </div>
             </div>
@@ -157,7 +157,7 @@ export default function Footer() {
       <div className="border-t border-neutral-900/60 relative z-10">
         <div className="max-w-[1360px] mx-auto px-6 md:px-10 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="font-mono text-[9px] text-neutral-500 tracking-[0.12em]">
-            © {new Date().getFullYear()} SPICEROUTE GLOBAL MNC. ALL RIGHTS RESERVED. EXPORTS CO-OP DESK.
+            © {new Date().getFullYear()} RICHY EXPORTS MNC. ALL RIGHTS RESERVED. FOUNDED 2019.
           </span>
           <div className="flex items-center gap-6 font-mono text-[9px] text-neutral-500 tracking-[0.15em]">
             <span className="hover:text-[var(--gold)] cursor-pointer uppercase">Terms of Trade</span>

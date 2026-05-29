@@ -210,7 +210,7 @@ export default function Contact() {
                             </h3>
                             <div className="space-y-5">
                                 <a
-                                    href="mailto:exports@richyexports.com"
+                                    href="mailto:trade@richyexports.in"
                                     className="flex items-center gap-4 group"
                                 >
                                     <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-gold/10 border border-gold/20 group-hover:border-gold/40 transition-all duration-300">
@@ -219,7 +219,7 @@ export default function Contact() {
                                     <div>
                                         <p className="font-body text-sm text-muted">Email</p>
                                         <p className="font-body text-cream group-hover:text-gold transition-colors duration-300">
-                                            exports@richyexports.com
+                                            trade@richyexports.in
                                         </p>
                                     </div>
                                 </a>
